@@ -18,16 +18,11 @@ Make sure you have Node.js installed locally before continuing.
 
 - Create a new model that represents a `Task` in a todo list application.
 -	Write the queries and mutations to list and create a new task.
-- Create an additional 1-to-many model which assigns a single task to at least 2 users
+- Create an additional model which provides a relationship between a task and at least 2 users
 - Write the queries and mutations which complete the task as another user
 - Implement UI changes to support the new functionality
 
 # Redwood
-
-> **NOTICE:** RedwoodJS is very close to a stable version 1.0. In the last two years,
-> the project has matured significantly and is already used in production by a number
-> of startups. We intend to have a 1.0 release candidate before the end of 2021 and
-> to release a truly production-ready 1.0 in early 2022.
 
 ## Getting Started
 - [Tutorial](https://redwoodjs.com/tutorial/welcome-to-redwood): getting started and complete overview guide.
