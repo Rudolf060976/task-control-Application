@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Make sure you have Node.js and PostgreSQL installed locally before continuing.
+Make sure you have Node.js installed locally before continuing.
 
 ## Initial setup
 
