@@ -19,7 +19,8 @@ Make sure you have Node.js installed locally before continuing.
 - Create a new model that represents a `Task` in a todo list application.
 -	Write the queries and mutations to list and create a new task.
 - Create an additional model which provides a relationship between a task and at least 2 users
-- Write the queries and mutations which complete the task as another user
+- Write the queries and mutations which allow a user to complete a task
+- The system should keep track of who created a task separately from who completed it
 - Implement UI changes to support the new functionality
 
 # Redwood
