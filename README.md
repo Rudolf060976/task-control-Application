@@ -1,3 +1,27 @@
+# Code Test
+
+## Prerequisites
+
+Make sure you have Node.js and PostgreSQL installed locally before continuing.
+
+## Initial setup
+
+1. Clone this repo
+1. Run `nvm use`
+1. Run `yarn install`
+1. Create `.env` file
+1. Run `yarn secret` and copy the value to the `SESSION_SECRET` variable in `.env`
+1. Run `yarn migrate`
+1. Run `yarn dev`
+
+## Instructions
+
+- Create a new model that represents a `Task` in a todo list application.
+-	Write the queries and mutations to list and create a new task.
+- Create an additional 1-to-many model which assigns a single task to at least 2 users
+- Write the queries and mutations which complete the task as another user
+- Implement UI changes to support the new functionality
+
 # Redwood
 
 > **NOTICE:** RedwoodJS is very close to a stable version 1.0. In the last two years,
