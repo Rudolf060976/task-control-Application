@@ -15,4 +15,19 @@ model User {
   salt                String
   resetToken          String?
   resetTokenExpiresAt DateTime?
+  createdTasks        Task[]    @relation("createdByUser")
+  assignedTasks       Task[]    @relation("assignedToUser")
+}
+
+model Task {
+  id                  Int       @id @default(autoincrement())
+  createdAt           DateTime  @default(now())
+  status              String    @default("todo")
+  title               String
+  description         String
+  createdBy           User      @relation("createdByUser", fields: [createdById], references: [id])
+  createdById         Int
+  assignedTo          User?     @relation("assignedToUser", fields: [assignedToId], references: [id])
+  assignedToId        Int?
+  isCompleted         Boolean   @default(false)
 }
