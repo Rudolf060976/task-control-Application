@@ -11,9 +11,9 @@ export const schema = gql`
   type Query {
     users: [User!]! @requireAuth
     user(id: Int!): User @requireAuth
-    getAllPendingTasks: [Task!]!
-    getTasksCreatedByUser(userId: Int!): [Task!]!
-    getTasksAssignedToUser(userId: Int!): [Task!]!
+    getAllPendingTasks: [Task!]! @skipAuth
+    getTasksCreatedByUser(userId: Int!): [Task!]! @skipAuth
+    getTasksAssignedToUser(userId: Int!): [Task!]! @skipAuth
   }
 
   input CreateUserInput {
@@ -36,9 +36,10 @@ export const schema = gql`
     createUser(input: CreateUserInput!): User! @requireAuth
     updateUser(id: Int!, input: UpdateUserInput!): User! @requireAuth
     deleteUser(id: Int!): User! @requireAuth
-    createTask(userId: Int!, input: CreateTaskInput!): Task!
-    deleteTask(userId: Int!, taskId: Int!): Boolean!
-    assignTask(userId: Int!, taskId: Int!): Task!
-    completeTask(userId: Int!, taskId: Int!): Task!
+    createTask(userId: Int!, input: CreateTaskInput!): Task! @skipAuth
+    deleteTask(userId: Int!, taskId: Int!): Boolean! @skipAuth
+    assignTask(userId: Int!, taskId: Int!): Task @skipAuth
+    completeTask(userId: Int!, taskId: Int!): Task @skipAuth
+    unassignTask(taskId: Int!): Task @skipAuth
   }
 `

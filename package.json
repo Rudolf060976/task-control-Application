@@ -25,5 +25,6 @@
     "dev": "yarn rw prisma generate && yarn rw dev",
     "migrate": "yarn rw prisma migrate dev",
     "secret": "yarn rw g secret"
-  }
+  },
+  "dependencies": {}
 }

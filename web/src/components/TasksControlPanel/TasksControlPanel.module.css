@@ -1,0 +1,37 @@
+.mainContainer {
+  width: 100%;
+  display: flex;
+}
+
+.controlsContainer {
+  flex: 0 0 250px;
+  height: 200px;
+  background-color: blue;
+}
+
+.dragAndDropContainer {
+  flex: 1 1 0;
+  padding: 0 20px;
+  display: grid;
+  grid-template-areas:
+  "todo inprogress done";
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: repeat(1, auto);
+  gap: 0px 10px;
+  background-color: red;
+}
+
+.todoContainer {
+  grid-area: todo;
+  background-color: gray;
+}
+
+.inprogressContainer {
+  grid-area: inprogress;
+  background-color: gray;
+}
+
+.doneContainer {
+  grid-area: done;
+  background-color: gray;
+}

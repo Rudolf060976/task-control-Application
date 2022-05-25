@@ -9,6 +9,7 @@
 
 import { Set, Router, Route } from '@redwoodjs/router'
 import UsersLayout from 'src/layouts/UsersLayout'
+import UserTasks from './pages/Task/UserTasks'
 
 const Routes = () => {
   return (
@@ -21,6 +22,7 @@ const Routes = () => {
         <Route path="/users/{id:Int}" page={UserUserPage} name="user" />
         <Route path="/users" page={UserUsersPage} name="users" />
       </Set>
+      <Route path="/tasks" page={UserTasks} name="userTasks" />
       <Route path="/login" page={LoginPage} name="login" />
       <Route path="/signup" page={SignupPage} name="signup" />
       <Route path="/forgot-password" page={ForgotPasswordPage} name="forgotPassword" />
