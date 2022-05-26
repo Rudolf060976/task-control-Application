@@ -33,7 +33,7 @@ export const GET_PENDING_TASKS_QUERY = gql`
 export const GET_TASKS_CREATED_BY_USER_QUERY = gql`
   query GetTasksCreatedByUser($userId: Int!) {
     getTasksCreatedByUser(userId: $userId) {
-      id: Int!
+      id
       createdAt
       status
       title
@@ -48,7 +48,7 @@ export const GET_TASKS_CREATED_BY_USER_QUERY = gql`
 export const GET_TASKS_ASSIGNED_TO_USER_QUERY = gql`
   query GetTasksAssignedToUser($userId: Int!) {
     getTasksAssignedToUser(userId: $userId) {
-      id: Int!
+      id
       createdAt
       status
       title

@@ -9,7 +9,13 @@ type ToDoListProps = {
 }
 
 const ToDoList: React.FC<ToDoListProps> = ({ userId, tasks }) => {
-  return <ul className={styles.mainContainer}></ul>
+  return (
+    <ul className={styles.mainContainer}>
+      {tasks.map((task) => {
+        return <li key={task.id}>{task.title}</li>
+      })}
+    </ul>
+  )
 }
 
 export default ToDoList

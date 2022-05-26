@@ -1,15 +1,56 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DropResult, ResponderProvided, DragStart } from 'react-beautiful-dnd'
-import { useMutation } from '@redwoodjs/web'
-import { CREATE_TASK_MUTATION } from 'src/graphql/task/mutation'
+import { useApolloClient } from '@apollo/client'
 import { TaskFilter } from 'src/components/TasksControlPanel/TasksControlPanel'
+import { createTask, getTasksCreatedByUser } from 'src/graphql/task/services'
+import { Task } from 'types/graphql'
+
+type ListType = 'todo' | 'inprogress' | 'done'
 
 export const useTaskControl = (userId: number) => {
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false)
   const [snackBarMessage, setSnackBarMessage] = useState<string | null>(null)
   const [taskFilter, setTaskFilter] = useState<TaskFilter>('mine')
 
-  const [createTask] = useMutation(CREATE_TASK_MUTATION)
+  const [todoTaskList, setTodoTaskList] = useState<Task[]>([])
+  const [inprogressTaskList, setInprogressTaskList] = useState<Task[]>([])
+  const [doneTaskList, setDoneTaskList] = useState<Task[]>([])
+
+  const [refreshTasks, setRefreshTasks] = useState(false)
+
+  const apolloClient = useApolloClient()
+
+  useEffect(() => {
+    fetchTaskData()
+  }, [taskFilter])
+
+  useEffect(() => {
+    if (refreshTasks) {
+      fetchTaskData()
+    }
+  }, [refreshTasks])
+
+  const fetchTaskData = async () => {
+    if (taskFilter === 'mine') {
+      const myTodoTasks = await getTasksCreatedByUser(userId, apolloClient)
+
+      setTodoTaskList(myTodoTasks)
+
+      setRefreshTasks(false)
+    }
+  }
+
+  const addTaskToList = (listType: ListType, task: Task) => {
+    if (listType === 'todo') {
+      return setTodoTaskList([...todoTaskList, task])
+    }
+    if (listType === 'inprogress') {
+      return setInprogressTaskList([...inprogressTaskList, task])
+    }
+    if (listType === 'done') {
+      return setDoneTaskList([...doneTaskList, task])
+    }
+  }
 
   const dragStartHandler = (
     initial: DragStart,
@@ -22,17 +63,20 @@ export const useTaskControl = (userId: number) => {
     return !result || !provided
   }
 
-  const newTaskModalConfirmHandler = (title: string, description: string) => {
-    createTask({
-      variables: {
-        userId,
-        input: {
-          title,
-          description,
-        },
-      },
-    })
+  const newTaskModalConfirmHandler = async (
+    title: string,
+    description: string
+  ) => {
+    const newTask = await createTask(userId, title, description, apolloClient)
+
+    if (!newTask) return
+
+    addTaskToList('todo', newTask)
+
     setSnackBarMessage('Your task was created successfully!')
+
+    setRefreshTasks(true)
+
     setIsNewTaskModalOpen(false)
   }
 
@@ -56,5 +100,8 @@ export const useTaskControl = (userId: number) => {
     snackBarMessage: snackBarMessage || '',
     handleTaskFilter,
     taskFilter,
+    todoTaskList,
+    inprogressTaskList,
+    doneTaskList,
   }
 }

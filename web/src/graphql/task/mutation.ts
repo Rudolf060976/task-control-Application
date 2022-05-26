@@ -69,3 +69,9 @@ export const ARCHIVE_TASKS_MUTATION = gql`
     archiveTasks(taskIds: $taskIds)
   }
 `
+
+export const UPDATE_TASK_POSITIONS_MUTATION = gql`
+  mutation UpdateTaskPositionsMutation($input: [TaskPositionInput!]!) {
+    updateTaskPositions(input: $input)
+  }
+`

@@ -29,6 +29,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     snackBarMessage,
     handleTaskFilter,
     taskFilter,
+    todoTaskList,
   } = useTaskControl(userId)
 
   return (
@@ -53,7 +54,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         <div className={styles.dragAndDropContainer}>
           <div className={cs(styles.todoContainer, styles.taskContainers)}>
             <h1 className={styles.listTitle}>TO DO</h1>
-            <ToDoList userId={userId} tasks={[]} />
+            <ToDoList userId={userId} tasks={todoTaskList} />
           </div>
           <div
             className={cs(styles.inprogressContainer, styles.taskContainers)}

@@ -31,4 +31,5 @@ model Task {
   assignedToId        Int?
   isCompleted         Boolean   @default(false)
   isArchived          Boolean   @default(false)
+  position            Int       @default(0)
 }

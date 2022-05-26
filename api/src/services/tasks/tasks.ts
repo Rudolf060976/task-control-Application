@@ -8,6 +8,7 @@ import {
   MutationassignTaskArgs,
   MutationcompleteTaskArgs,
   MutationarchiveTasksArgs,
+  MutationupdateTaskPositionsArgs,
 } from 'types/graphql'
 
 export const getAllTasks = async () => {
@@ -185,6 +186,27 @@ export const archiveTasks = async ({ taskIds }: MutationarchiveTasksArgs) => {
       isArchived: true,
     },
   })
+
+  return true
+}
+
+export const updateTaskPositions = async ({
+  input,
+}: MutationupdateTaskPositionsArgs) => {
+  const taskPositions = input
+
+  await Promise.all(
+    taskPositions.map((taskPosition) => {
+      return db.task.update({
+        where: {
+          id: taskPosition.id,
+        },
+        data: {
+          position: taskPosition.position,
+        },
+      })
+    })
+  )
 
   return true
 }
