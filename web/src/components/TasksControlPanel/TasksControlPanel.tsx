@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   DragDropContext,
   DropResult,
@@ -19,12 +19,15 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material'
+import NewTaskModal from '../NewTaskModal/NewTaskModal'
 
 type TasksControlPanelProps = {
   userId: number
 }
 
 const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
+  const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false)
+
   const dragStartHandler = (
     initial: DragStart,
     provided: ResponderProvided
@@ -36,10 +39,22 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     return !result || !provided
   }
 
+  const newTaskModalConfirmHandler = (title: string, description: string) => {
+    console.log('******* TITLE *******', title)
+
+    console.log('******* DESCRIPTION *******', description)
+
+    setIsNewTaskModalOpen(false)
+  }
+
   return (
     <div className={styles.mainContainer}>
       <div className={styles.controlsContainer}>
-        <Button variant="contained" className={styles.createTaskButton}>
+        <Button
+          variant="contained"
+          className={styles.createTaskButton}
+          onClick={() => setIsNewTaskModalOpen(true)}
+        >
           New Task
         </Button>
         <FormControl>
@@ -83,6 +98,11 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
           </div>
         </div>
       </DragDropContext>
+      <NewTaskModal
+        isOpen={isNewTaskModalOpen}
+        onClose={() => setIsNewTaskModalOpen(false)}
+        onConfirm={newTaskModalConfirmHandler}
+      />
     </div>
   )
 }
