@@ -1,6 +1,7 @@
 import React from 'react'
 import { Task, User } from 'types/graphql'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 
 import styles from './TaskTile.module.css'
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
@@ -23,6 +24,7 @@ const TaskTile: React.FC<TaskTileProps> = ({ task, userList }) => {
 
   return (
     <li className={styles.mainContainer}>
+      <DragIndicatorIcon className={styles.dragIcon} />
       <span className={styles.titleArea}>{title}</span>
       <span className={styles.dateArea}>{`Created: ${createdAt.substring(
         0,
