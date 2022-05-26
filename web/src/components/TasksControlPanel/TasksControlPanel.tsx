@@ -1,10 +1,5 @@
-import React, { useState } from 'react'
-import {
-  DragDropContext,
-  DropResult,
-  ResponderProvided,
-  DragStart,
-} from 'react-beautiful-dnd'
+import React from 'react'
+import { DragDropContext } from 'react-beautiful-dnd'
 import DoneList from '../DoneList/DoneList'
 import InprogressList from '../InprogressList/InprogressList'
 import ToDoList from '../TodoList/TodoList'
@@ -20,32 +15,20 @@ import {
   RadioGroup,
 } from '@mui/material'
 import NewTaskModal from '../NewTaskModal/NewTaskModal'
+import { useTaskControl } from 'src/hooks/useTaskControl'
 
 type TasksControlPanelProps = {
   userId: number
 }
 
 const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
-  const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false)
-
-  const dragStartHandler = (
-    initial: DragStart,
-    provided: ResponderProvided
-  ) => {
-    return !initial || !provided || userId
-  }
-
-  const dragEndHandler = (result: DropResult, provided: ResponderProvided) => {
-    return !result || !provided
-  }
-
-  const newTaskModalConfirmHandler = (title: string, description: string) => {
-    console.log('******* TITLE *******', title)
-
-    console.log('******* DESCRIPTION *******', description)
-
-    setIsNewTaskModalOpen(false)
-  }
+  const {
+    isNewTaskModalOpen,
+    setIsNewTaskModalOpen,
+    dragStartHandler,
+    dragEndHandler,
+    newTaskModalConfirmHandler,
+  } = useTaskControl()
 
   return (
     <div className={styles.mainContainer}>
