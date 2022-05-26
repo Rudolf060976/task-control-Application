@@ -1,0 +1,47 @@
+.mainContainer {
+  width: 100%;
+  border: 1px solid steelblue;
+  box-shadow: 0px 0px 3px gray;
+  display: grid;
+  grid-template-areas:
+  "title   title   title    title"
+  "date    date    date     date "
+  "creator creator assigned assigned"
+  "descrip descrip descrip  descrip";
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: repeat(4, auto);
+  gap: 0px 0px;
+  font-size: 10px;
+  padding: 10px
+}
+
+.titleArea {
+  grid-area: title;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: steelblue;
+  font-family: 'Roboto';
+}
+
+.dateArea {
+  grid-area: date;
+}
+
+.creatorArea {
+  grid-area: creator;
+}
+
+.assignedArea {
+  grid-area: assigned;
+}
+
+.descripArea {
+  grid-area: descrip;
+}
+
+.descriptionIcon {
+  margin-left: 10px !important;
+  color: steelblue;
+  cursor: pointer;
+}

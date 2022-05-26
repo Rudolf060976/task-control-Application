@@ -44,5 +44,6 @@ export const schema = gql`
     unassignTask(taskId: Int!): Task @skipAuth
     archiveTasks(taskIds: [Int!]!): Boolean! @skipAuth
     updateTaskPositions(input: [TaskPositionInput!]!): Boolean! @skipAuth
+    deleteAllTasks: Boolean! @skipAuth
   }
 `

@@ -30,6 +30,8 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     handleTaskFilter,
     taskFilter,
     todoTaskList,
+    deleteAllTasksHandler,
+    userList,
   } = useTaskControl(userId)
 
   return (
@@ -46,6 +48,20 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
           <div className={styles.taskFilterLabel}>Tasks to Show:</div>
           <TaskToggleButton value={taskFilter} onChange={handleTaskFilter} />
         </div>
+        <Button
+          variant="contained"
+          className={styles.createTaskButton}
+          onClick={() => null}
+        >
+          Archive Tasks
+        </Button>
+        <Button
+          variant="contained"
+          className={styles.createTaskButton}
+          onClick={deleteAllTasksHandler}
+        >
+          Delete all (Development)
+        </Button>
       </div>
       <DragDropContext
         onDragStart={dragStartHandler}
@@ -54,7 +70,11 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         <div className={styles.dragAndDropContainer}>
           <div className={cs(styles.todoContainer, styles.taskContainers)}>
             <h1 className={styles.listTitle}>TO DO</h1>
-            <ToDoList userId={userId} tasks={todoTaskList} />
+            <ToDoList
+              userId={userId}
+              tasks={todoTaskList}
+              userList={userList}
+            />
           </div>
           <div
             className={cs(styles.inprogressContainer, styles.taskContainers)}
@@ -75,8 +95,9 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
       />
       <Snackbar
         open={isSnackBarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={1000}
         onClose={snackBarCloseHandler}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
           onClose={snackBarCloseHandler}

@@ -83,6 +83,11 @@ export const deleteTask = async ({
   return true
 }
 
+export const deleteAllTasks = async () => {
+  await db.task.deleteMany()
+  return true
+}
+
 export const assignTask = async ({
   userId,
   taskId,

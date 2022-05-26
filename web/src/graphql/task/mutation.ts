@@ -75,3 +75,8 @@ export const UPDATE_TASK_POSITIONS_MUTATION = gql`
     updateTaskPositions(input: $input)
   }
 `
+export const DELETE_ALL_TASKS_MUTATION = gql`
+  mutation DeleteAllTasksMutation {
+    deleteAllTasks
+  }
+`

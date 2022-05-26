@@ -1,6 +1,15 @@
 import { ApolloClient } from '@apollo/client'
-import { CREATE_TASK_MUTATION } from './mutation'
-import { GET_TASKS_CREATED_BY_USER_QUERY } from './query'
+import { CREATE_TASK_MUTATION, DELETE_ALL_TASKS_MUTATION } from './mutation'
+import { GET_ALL_USERS, GET_TASKS_CREATED_BY_USER_QUERY } from './query'
+
+export const getAllUsers = async (client: ApolloClient<object>) => {
+  const queryResults = await client.query({
+    query: GET_ALL_USERS,
+    fetchPolicy: 'network-only',
+  })
+
+  return queryResults.data.users
+}
 
 export const getTasksCreatedByUser = async (
   userId: number,
@@ -35,4 +44,12 @@ export const createTask = async (
   })
 
   return mutationResults.data.createTask
+}
+
+export const deleteAllTasks = async (client: ApolloClient<object>) => {
+  await client.mutate({
+    mutation: DELETE_ALL_TASKS_MUTATION,
+  })
+
+  return true
 }

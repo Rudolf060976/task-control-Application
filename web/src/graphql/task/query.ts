@@ -60,3 +60,12 @@ export const GET_TASKS_ASSIGNED_TO_USER_QUERY = gql`
     }
   }
 `
+
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    users {
+      id
+      email
+    }
+  }
+`

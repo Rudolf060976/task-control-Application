@@ -61,10 +61,11 @@
 
 .createTaskButton {
   margin-bottom: 30px !important;
+  width: 150px !important;
 }
 
 .toggleButtonContainer {
-
+  margin-bottom: 30px !important;
 }
 
 .taskFilterLabel {

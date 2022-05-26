@@ -2,8 +2,13 @@ import { useState, useEffect } from 'react'
 import { DropResult, ResponderProvided, DragStart } from 'react-beautiful-dnd'
 import { useApolloClient } from '@apollo/client'
 import { TaskFilter } from 'src/components/TasksControlPanel/TasksControlPanel'
-import { createTask, getTasksCreatedByUser } from 'src/graphql/task/services'
-import { Task } from 'types/graphql'
+import {
+  createTask,
+  deleteAllTasks,
+  getAllUsers,
+  getTasksCreatedByUser,
+} from 'src/graphql/task/services'
+import { Task, User } from 'types/graphql'
 
 type ListType = 'todo' | 'inprogress' | 'done'
 
@@ -18,7 +23,13 @@ export const useTaskControl = (userId: number) => {
 
   const [refreshTasks, setRefreshTasks] = useState(false)
 
+  const [userList, setUserList] = useState<User[]>([])
+
   const apolloClient = useApolloClient()
+
+  useEffect(() => {
+    fetchTaskData()
+  }, [])
 
   useEffect(() => {
     fetchTaskData()
@@ -31,8 +42,12 @@ export const useTaskControl = (userId: number) => {
   }, [refreshTasks])
 
   const fetchTaskData = async () => {
+    const allUsers = await getAllUsers(apolloClient)
+
     if (taskFilter === 'mine') {
       const myTodoTasks = await getTasksCreatedByUser(userId, apolloClient)
+
+      setUserList(allUsers)
 
       setTodoTaskList(myTodoTasks)
 
@@ -89,6 +104,11 @@ export const useTaskControl = (userId: number) => {
     setTaskFilter(filterValue)
   }
 
+  const deleteAllTasksHandler = () => {
+    deleteAllTasks(apolloClient)
+    setRefreshTasks(true)
+  }
+
   return {
     isNewTaskModalOpen,
     setIsNewTaskModalOpen,
@@ -103,5 +123,7 @@ export const useTaskControl = (userId: number) => {
     todoTaskList,
     inprogressTaskList,
     doneTaskList,
+    deleteAllTasksHandler,
+    userList,
   }
 }
