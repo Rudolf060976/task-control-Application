@@ -5,8 +5,8 @@
 
 .controlsContainer {
   flex: 0 0 250px;
-  height: 200px;
-  background-color: blue;
+  height: 100vh;
+  background-color: lightsteelblue;
 }
 
 .dragAndDropContainer {
@@ -18,20 +18,34 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: repeat(1, auto);
   gap: 0px 10px;
-  background-color: red;
+}
+
+.taskContainers {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px gray;
+  height: 70vh;
 }
 
 .todoContainer {
   grid-area: todo;
-  background-color: gray;
+
 }
 
 .inprogressContainer {
   grid-area: inprogress;
-  background-color: gray;
+
 }
 
 .doneContainer {
   grid-area: done;
-  background-color: gray;
+
+}
+
+.listTitle {
+  text-align: center;
+  font-size: 24px;
+  font-family: 'Roboto';
+  font-weight: bold;
+  padding: 15px 0;
 }

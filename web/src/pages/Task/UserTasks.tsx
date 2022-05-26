@@ -28,7 +28,7 @@ const UserTasks: React.FC = () => {
     data: userData,
   } = useQuery(QUERY, {
     variables: {
-      id: currentUser.id,
+      id: currentUser?.id || '',
     },
   })
 

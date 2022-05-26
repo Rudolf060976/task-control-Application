@@ -5,7 +5,10 @@ import {
   ResponderProvided,
   DragStart,
 } from 'react-beautiful-dnd'
-import ToDoList from '../ToDoList/ToDoList'
+import DoneList from '../DoneList/DoneList'
+import InprogressList from '../InprogressList/InprogressList'
+import ToDoList from '../TodoList/TodoList'
+import cs from 'classnames'
 
 import styles from './TasksControlPanel.module.css'
 
@@ -33,9 +36,20 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         onDragEnd={dragEndHandler}
       >
         <div className={styles.dragAndDropContainer}>
-          <div className={styles.todoContainer}></div>
-          <div className={styles.inprogressContainer}></div>
-          <div className={styles.doneContainer}></div>
+          <div className={cs(styles.todoContainer, styles.taskContainers)}>
+            <h1 className={styles.listTitle}>TO DO</h1>
+            <ToDoList userId={userId} tasks={[]} />
+          </div>
+          <div
+            className={cs(styles.inprogressContainer, styles.taskContainers)}
+          >
+            <h1 className={styles.listTitle}>IN PROGRESS</h1>
+            <InprogressList userId={userId} tasks={[]} />
+          </div>
+          <div className={cs(styles.doneContainer, styles.taskContainers)}>
+            <h1 className={styles.listTitle}>DONE</h1>
+            <DoneList userId={userId} tasks={[]} />
+          </div>
         </div>
       </DragDropContext>
     </div>
