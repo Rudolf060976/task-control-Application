@@ -30,6 +30,7 @@
   border-radius: 10px;
   box-shadow: 0px 0px 10px gray;
   height: 70vh;
+  position: relative;
 }
 
 .todoContainer {
@@ -61,3 +62,10 @@
 .createTaskButton {
   margin-bottom: 30px !important;
 }
+
+.toggleButtonContainer {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+}
+

@@ -6,20 +6,16 @@ import ToDoList from '../TodoList/TodoList'
 import cs from 'classnames'
 
 import styles from './TasksControlPanel.module.css'
-import {
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-} from '@mui/material'
+import { Alert, Button, Snackbar } from '@mui/material'
 import NewTaskModal from '../NewTaskModal/NewTaskModal'
 import { useTaskControl } from 'src/hooks/useTaskControl'
+import TaskToggleButton from '../TaskToggleButton/TaskToggleButton'
 
 type TasksControlPanelProps = {
   userId: number
 }
+
+export type TaskFilter = 'all' | 'mine'
 
 const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
   const {
@@ -28,7 +24,14 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     dragStartHandler,
     dragEndHandler,
     newTaskModalConfirmHandler,
-  } = useTaskControl()
+    isSnackBarOpen,
+    snackBarCloseHandler,
+    snackBarMessage,
+    handleTaskFilter,
+    todoTaskFilter,
+    inprogressTaskFilter,
+    doneTaskFilter,
+  } = useTaskControl(userId)
 
   return (
     <div className={styles.mainContainer}>
@@ -40,25 +43,6 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         >
           New Task
         </Button>
-        <FormControl>
-          <FormLabel id="task-filter">Tasks to show</FormLabel>
-          <RadioGroup
-            aria-labelledby="tasksFilterGroup"
-            defaultValue="all"
-            name="taskFilterGroup"
-          >
-            <FormControlLabel
-              value="all"
-              control={<Radio />}
-              label="All Tasks"
-            />
-            <FormControlLabel
-              value="mine"
-              control={<Radio />}
-              label="My Tasks"
-            />
-          </RadioGroup>
-        </FormControl>
       </div>
       <DragDropContext
         onDragStart={dragStartHandler}
@@ -67,16 +51,40 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         <div className={styles.dragAndDropContainer}>
           <div className={cs(styles.todoContainer, styles.taskContainers)}>
             <h1 className={styles.listTitle}>TO DO</h1>
+            <div className={styles.toggleButtonContainer}>
+              <TaskToggleButton
+                value={todoTaskFilter}
+                onChange={(value: TaskFilter) =>
+                  handleTaskFilter('todo', value)
+                }
+              />
+            </div>
             <ToDoList userId={userId} tasks={[]} />
           </div>
           <div
             className={cs(styles.inprogressContainer, styles.taskContainers)}
           >
             <h1 className={styles.listTitle}>IN PROGRESS</h1>
+            <div className={styles.toggleButtonContainer}>
+              <TaskToggleButton
+                value={inprogressTaskFilter}
+                onChange={(value: TaskFilter) =>
+                  handleTaskFilter('inprogress', value)
+                }
+              />
+            </div>
             <InprogressList userId={userId} tasks={[]} />
           </div>
           <div className={cs(styles.doneContainer, styles.taskContainers)}>
             <h1 className={styles.listTitle}>DONE</h1>
+            <div className={styles.toggleButtonContainer}>
+              <TaskToggleButton
+                value={doneTaskFilter}
+                onChange={(value: TaskFilter) =>
+                  handleTaskFilter('done', value)
+                }
+              />
+            </div>
             <DoneList userId={userId} tasks={[]} />
           </div>
         </div>
@@ -86,6 +94,19 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         onClose={() => setIsNewTaskModalOpen(false)}
         onConfirm={newTaskModalConfirmHandler}
       />
+      <Snackbar
+        open={isSnackBarOpen}
+        autoHideDuration={6000}
+        onClose={snackBarCloseHandler}
+      >
+        <Alert
+          onClose={snackBarCloseHandler}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          {snackBarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

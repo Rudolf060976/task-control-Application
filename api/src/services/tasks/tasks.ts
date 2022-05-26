@@ -22,7 +22,6 @@ export const getAllPendingTasks = async () => {
   return await db.task.findMany({
     where: {
       status: 'todo',
-      isCompleted: false,
     },
   })
 }
@@ -32,7 +31,6 @@ export const getTasksCreatedByUser = async ({ userId }: { userId: number }) => {
     where: {
       status: 'todo',
       createdById: userId,
-      isArchived: false,
     },
   })
 }
