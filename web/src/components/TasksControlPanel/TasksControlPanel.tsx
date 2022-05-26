@@ -32,6 +32,8 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     todoTaskList,
     deleteAllTasksHandler,
     userList,
+    inprogressTaskList,
+    doneTaskList,
   } = useTaskControl(userId)
 
   return (
@@ -65,6 +67,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
       </div>
       <DragDropContext
         onDragStart={dragStartHandler}
+        onDragUpdate={() => null}
         onDragEnd={dragEndHandler}
       >
         <div className={styles.dragAndDropContainer}>
@@ -80,11 +83,19 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
             className={cs(styles.inprogressContainer, styles.taskContainers)}
           >
             <h1 className={styles.listTitle}>IN PROGRESS</h1>
-            <InprogressList userId={userId} tasks={[]} />
+            <InprogressList
+              userId={userId}
+              tasks={inprogressTaskList}
+              userList={userList}
+            />
           </div>
           <div className={cs(styles.doneContainer, styles.taskContainers)}>
             <h1 className={styles.listTitle}>DONE</h1>
-            <DoneList userId={userId} tasks={[]} />
+            <DoneList
+              userId={userId}
+              tasks={doneTaskList}
+              userList={userList}
+            />
           </div>
         </div>
       </DragDropContext>

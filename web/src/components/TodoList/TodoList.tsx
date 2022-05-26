@@ -1,8 +1,14 @@
 import React from 'react'
+import {
+  Droppable,
+  DroppableProvided,
+  DroppableStateSnapshot,
+} from 'react-beautiful-dnd'
 import { Task, User } from 'types/graphql'
 import TaskTile from '../TaskTile/TaskTile'
 
 import styles from './TodoList.module.css'
+import cs from 'classnames'
 
 type ToDoListProps = {
   userId: number
@@ -12,11 +18,29 @@ type ToDoListProps = {
 
 const ToDoList: React.FC<ToDoListProps> = ({ userId, tasks, userList }) => {
   return (
-    <ul className={styles.mainContainer}>
-      {tasks.map((task) => {
-        return <TaskTile key={task.id} task={task} userList={userList} />
-      })}
-    </ul>
+    <Droppable droppableId="todoList">
+      {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
+        <ul
+          {...provided.droppableProps}
+          ref={provided.innerRef}
+          className={cs(styles.mainContainer, {
+            [styles.isDraggingOver]: snapshot.isDraggingOver,
+          })}
+        >
+          {tasks.map((task, index) => {
+            return (
+              <TaskTile
+                key={task.id}
+                index={index}
+                task={task}
+                userList={userList}
+              />
+            )
+          })}
+          {provided.placeholder}
+        </ul>
+      )}
+    </Droppable>
   )
 }
 

@@ -70,13 +70,9 @@ export const useTaskControl = (userId: number) => {
   const dragStartHandler = (
     initial: DragStart,
     provided: ResponderProvided
-  ) => {
-    return !initial || !provided
-  }
+  ) => {}
 
-  const dragEndHandler = (result: DropResult, provided: ResponderProvided) => {
-    return !result || !provided
-  }
+  const dragEndHandler = (result: DropResult, provided: ResponderProvided) => {}
 
   const newTaskModalConfirmHandler = async (
     title: string,

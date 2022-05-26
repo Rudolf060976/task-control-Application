@@ -2,18 +2,31 @@ import React from 'react'
 import { Task, User } from 'types/graphql'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
+import {
+  Draggable,
+  DraggableProvided,
+  DraggableStateSnapshot,
+} from 'react-beautiful-dnd'
 
 import styles from './TaskTile.module.css'
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
+import cs from 'classnames'
 
 type TaskTileProps = {
   task: Task
+  index: number
   userList: User[]
+  preventDragging?: boolean
 }
 
-const TaskTile: React.FC<TaskTileProps> = ({ task, userList }) => {
+const TaskTile: React.FC<TaskTileProps> = ({
+  task,
+  index,
+  userList,
+  preventDragging,
+}) => {
   const { title, createdAt, description, createdById, assignedToId } = task
 
   const creatorUser =
@@ -23,33 +36,54 @@ const TaskTile: React.FC<TaskTileProps> = ({ task, userList }) => {
     userList.find((user) => user.id === assignedToId)?.email || ''
 
   return (
-    <li className={styles.mainContainer}>
-      <DragIndicatorIcon className={styles.dragIcon} />
-      <span className={styles.titleArea}>{title}</span>
-      <span className={styles.dateArea}>{`Created: ${createdAt.substring(
-        0,
-        10
-      )}`}</span>
-      <span className={styles.creatorArea}>{`Author: ${creatorUser}`}</span>
-      <span
-        className={styles.assignedArea}
-      >{`Assigned To: ${assignedToUser}`}</span>
-      <span className={styles.descripArea}>
-        {`Description:`}
-        <HtmlTooltip
-          title={
-            <>
-              <Typography fontSize={14} color="inherit">
-                Description:
-              </Typography>
-              <p>{description}</p>
-            </>
-          }
-        >
-          <VisibilityIcon className={styles.descriptionIcon} />
-        </HtmlTooltip>
-      </span>
-    </li>
+    <Draggable
+      draggableId={task.id.toString()}
+      index={index}
+      isDragDisabled={false}
+    >
+      {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+        return (
+          // eslint-disable-next-line
+          <li
+            ref={provided.innerRef}
+            className={cs(styles.mainContainer, {
+              [styles.isDragging]: snapshot.isDragging,
+            })}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            onMouseDown={(event: MouseEvent) => event.preventDefault()}
+          >
+            <DragIndicatorIcon className={styles.dragIcon} />
+            <span className={styles.titleArea}>{title}</span>
+            <span className={styles.dateArea}>{`Created: ${createdAt.substring(
+              0,
+              10
+            )}`}</span>
+            <span
+              className={styles.creatorArea}
+            >{`Author: ${creatorUser}`}</span>
+            <span
+              className={styles.assignedArea}
+            >{`Assigned To: ${assignedToUser}`}</span>
+            <span className={styles.descripArea}>
+              {`Description:`}
+              <HtmlTooltip
+                title={
+                  <>
+                    <Typography fontSize={14} color="inherit">
+                      Description:
+                    </Typography>
+                    <p>{description}</p>
+                  </>
+                }
+              >
+                <VisibilityIcon className={styles.descriptionIcon} />
+              </HtmlTooltip>
+            </span>
+          </li>
+        )
+      }}
+    </Draggable>
   )
 }
 
