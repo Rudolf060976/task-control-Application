@@ -8,6 +8,7 @@ export const schema = gql`
     createdById: Int!
     assignedToId: Int
     isCompleted: Boolean
+    isArchived: Boolean
   }
 
   input CreateTaskInput {

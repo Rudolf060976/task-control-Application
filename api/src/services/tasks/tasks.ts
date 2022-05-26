@@ -7,7 +7,16 @@ import {
   MutationdeleteTaskArgs,
   MutationassignTaskArgs,
   MutationcompleteTaskArgs,
-} from '../../../types/graphql'
+  MutationarchiveTasksArgs,
+} from 'types/graphql'
+
+export const getAllTasks = async () => {
+  return await db.task.findMany({
+    where: {
+      isArchived: false,
+    },
+  })
+}
 
 export const getAllPendingTasks = async () => {
   return await db.task.findMany({
@@ -21,7 +30,9 @@ export const getAllPendingTasks = async () => {
 export const getTasksCreatedByUser = async ({ userId }: { userId: number }) => {
   return await db.task.findMany({
     where: {
+      status: 'todo',
       createdById: userId,
+      isArchived: false,
     },
   })
 }
@@ -34,6 +45,7 @@ export const getTasksAssignedToUser = async ({
   return await db.task.findMany({
     where: {
       assignedToId: userId,
+      isArchived: false,
     },
   })
 }
@@ -149,4 +161,32 @@ export const unassignTask = async ({ taskId }: MutationassignTaskArgs) => {
       status: 'todo',
     },
   })
+}
+
+export const archiveTasks = async ({ taskIds }: MutationarchiveTasksArgs) => {
+  const existingTasks = await db.task.findMany({
+    where: {
+      id: { in: taskIds },
+    },
+  })
+
+  if (!existingTasks || existingTasks.length === 0) return false
+
+  const areAllTasksCompleted = existingTasks.every(
+    (task) => task.status === 'done' && task.isCompleted
+  )
+
+  if (!areAllTasksCompleted) return false
+
+  await db.task.updateMany({
+    where: {
+      id: { in: taskIds },
+    },
+    data: {
+      status: 'archived',
+      isArchived: true,
+    },
+  })
+
+  return true
 }

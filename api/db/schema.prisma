@@ -30,4 +30,5 @@ model Task {
   assignedTo          User?     @relation("assignedToUser", fields: [assignedToId], references: [id])
   assignedToId        Int?
   isCompleted         Boolean   @default(false)
+  isArchived          Boolean   @default(false)
 }
