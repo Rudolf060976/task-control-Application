@@ -7,10 +7,7 @@ import { TaskFilter } from 'src/components/TasksControlPanel/TasksControlPanel'
 export const useTaskControl = (userId: number) => {
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false)
   const [snackBarMessage, setSnackBarMessage] = useState<string | null>(null)
-  const [todoTaskFilter, setTodoTaskFilter] = useState<TaskFilter>('mine')
-  const [inprogressTaskFilter, setInprogressTaskFilter] =
-    useState<TaskFilter>('mine')
-  const [doneTaskFilter, setDoneTaskFilter] = useState<TaskFilter>('mine')
+  const [taskFilter, setTaskFilter] = useState<TaskFilter>('mine')
 
   const [createTask] = useMutation(CREATE_TASK_MUTATION)
 
@@ -44,15 +41,8 @@ export const useTaskControl = (userId: number) => {
     setSnackBarMessage(null)
   }
 
-  const handleTaskFilter = (
-    listName: 'todo' | 'inprogress' | 'done',
-    filterValue: TaskFilter
-  ) => {
-    if (listName === 'todo') setTodoTaskFilter(filterValue)
-
-    if (listName === 'inprogress') setInprogressTaskFilter(filterValue)
-
-    if (listName === 'done') setDoneTaskFilter(filterValue)
+  const handleTaskFilter = (filterValue: TaskFilter) => {
+    setTaskFilter(filterValue)
   }
 
   return {
@@ -65,8 +55,6 @@ export const useTaskControl = (userId: number) => {
     snackBarCloseHandler,
     snackBarMessage: snackBarMessage || '',
     handleTaskFilter,
-    todoTaskFilter,
-    inprogressTaskFilter,
-    doneTaskFilter,
+    taskFilter,
   }
 }

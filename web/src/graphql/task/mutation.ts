@@ -64,8 +64,8 @@ export const UNASSIGN_TASK_MUTATION = gql`
   }
 `
 
-export const ARCHIVE_TASK_MUTATION = gql`
-  mutation ArchiveTaskMutation($taskIds: [Int!]!) {
-    archiveTask(taskIds: $taskIds)
+export const ARCHIVE_TASKS_MUTATION = gql`
+  mutation ArchiveTasksMutation($taskIds: [Int!]!) {
+    archiveTasks(taskIds: $taskIds)
   }
 `

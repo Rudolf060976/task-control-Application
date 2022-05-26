@@ -6,12 +6,13 @@
 .controlsContainer {
   flex: 0 0 250px;
   height: 100vh;
-  background-color: rgba(176,196,222, 0.5);
+  background-color: rgba(172, 176, 180, 0.2);
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: center;
   padding-top: 30px;
+  box-shadow: 0px 0px 5px lightgray;
 }
 
 .dragAndDropContainer {
@@ -30,7 +31,6 @@
   border-radius: 10px;
   box-shadow: 0px 0px 10px gray;
   height: 70vh;
-  position: relative;
 }
 
 .todoContainer {
@@ -64,8 +64,10 @@
 }
 
 .toggleButtonContainer {
-  position: absolute;
-  top: 5px;
-  left: 10px;
+
+}
+
+.taskFilterLabel {
+  margin-bottom: 5px;
 }
 

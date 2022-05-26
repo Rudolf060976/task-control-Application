@@ -28,9 +28,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     snackBarCloseHandler,
     snackBarMessage,
     handleTaskFilter,
-    todoTaskFilter,
-    inprogressTaskFilter,
-    doneTaskFilter,
+    taskFilter,
   } = useTaskControl(userId)
 
   return (
@@ -43,6 +41,10 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         >
           New Task
         </Button>
+        <div className={styles.toggleButtonContainer}>
+          <div className={styles.taskFilterLabel}>Tasks to Show:</div>
+          <TaskToggleButton value={taskFilter} onChange={handleTaskFilter} />
+        </div>
       </div>
       <DragDropContext
         onDragStart={dragStartHandler}
@@ -51,40 +53,16 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         <div className={styles.dragAndDropContainer}>
           <div className={cs(styles.todoContainer, styles.taskContainers)}>
             <h1 className={styles.listTitle}>TO DO</h1>
-            <div className={styles.toggleButtonContainer}>
-              <TaskToggleButton
-                value={todoTaskFilter}
-                onChange={(value: TaskFilter) =>
-                  handleTaskFilter('todo', value)
-                }
-              />
-            </div>
             <ToDoList userId={userId} tasks={[]} />
           </div>
           <div
             className={cs(styles.inprogressContainer, styles.taskContainers)}
           >
             <h1 className={styles.listTitle}>IN PROGRESS</h1>
-            <div className={styles.toggleButtonContainer}>
-              <TaskToggleButton
-                value={inprogressTaskFilter}
-                onChange={(value: TaskFilter) =>
-                  handleTaskFilter('inprogress', value)
-                }
-              />
-            </div>
             <InprogressList userId={userId} tasks={[]} />
           </div>
           <div className={cs(styles.doneContainer, styles.taskContainers)}>
             <h1 className={styles.listTitle}>DONE</h1>
-            <div className={styles.toggleButtonContainer}>
-              <TaskToggleButton
-                value={doneTaskFilter}
-                onChange={(value: TaskFilter) =>
-                  handleTaskFilter('done', value)
-                }
-              />
-            </div>
             <DoneList userId={userId} tasks={[]} />
           </div>
         </div>

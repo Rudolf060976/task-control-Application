@@ -1,9 +1,16 @@
-import { Link, routes } from '@redwoodjs/router'
+import { useEffect } from 'react'
+import { Link, routes, navigate } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { useAuth } from '@redwoodjs/auth'
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(routes.userTasks())
+    }
+  }, [isAuthenticated])
 
   return (
     <>
