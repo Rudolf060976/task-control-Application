@@ -6,7 +6,12 @@
 .controlsContainer {
   flex: 0 0 250px;
   height: 100vh;
-  background-color: lightsteelblue;
+  background-color: rgba(176,196,222, 0.5);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 30px;
 }
 
 .dragAndDropContainer {
@@ -17,7 +22,7 @@
   "todo inprogress done";
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: repeat(1, auto);
-  gap: 0px 10px;
+  gap: 0px 20px;
 }
 
 .taskContainers {
@@ -43,9 +48,16 @@
 }
 
 .listTitle {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 24px;
   font-family: 'Roboto';
   font-weight: bold;
-  padding: 15px 0;
+  padding: 0;
+  height: 60px;
+}
+
+.createTaskButton {
+  margin-bottom: 30px !important;
 }

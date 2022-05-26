@@ -11,6 +11,14 @@ import ToDoList from '../TodoList/TodoList'
 import cs from 'classnames'
 
 import styles from './TasksControlPanel.module.css'
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+} from '@mui/material'
 
 type TasksControlPanelProps = {
   userId: number
@@ -30,7 +38,30 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
 
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.controlsContainer}></div>
+      <div className={styles.controlsContainer}>
+        <Button variant="contained" className={styles.createTaskButton}>
+          New Task
+        </Button>
+        <FormControl>
+          <FormLabel id="task-filter">Tasks to show</FormLabel>
+          <RadioGroup
+            aria-labelledby="tasksFilterGroup"
+            defaultValue="all"
+            name="taskFilterGroup"
+          >
+            <FormControlLabel
+              value="all"
+              control={<Radio />}
+              label="All Tasks"
+            />
+            <FormControlLabel
+              value="mine"
+              control={<Radio />}
+              label="My Tasks"
+            />
+          </RadioGroup>
+        </FormControl>
+      </div>
       <DragDropContext
         onDragStart={dragStartHandler}
         onDragEnd={dragEndHandler}
