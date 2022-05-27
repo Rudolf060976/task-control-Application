@@ -38,6 +38,7 @@ const InprogressList: React.FC<InprogressListProps> = ({
                 index={index}
                 task={task}
                 userList={userList}
+                droppableId="inprogressList"
               />
             )
           })}

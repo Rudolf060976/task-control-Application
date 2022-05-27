@@ -1,5 +1,10 @@
 import { ApolloClient } from '@apollo/client'
-import { CREATE_TASK_MUTATION, DELETE_ALL_TASKS_MUTATION } from './mutation'
+import { MutationupdateTaskPositionsArgs } from 'types/graphql'
+import {
+  CREATE_TASK_MUTATION,
+  DELETE_ALL_TASKS_MUTATION,
+  UPDATE_TASK_POSITIONS_MUTATION,
+} from './mutation'
 import { GET_ALL_USERS, GET_TASKS_CREATED_BY_USER_QUERY } from './query'
 
 export const getAllUsers = async (client: ApolloClient<object>) => {
@@ -49,6 +54,20 @@ export const createTask = async (
 export const deleteAllTasks = async (client: ApolloClient<object>) => {
   await client.mutate({
     mutation: DELETE_ALL_TASKS_MUTATION,
+  })
+
+  return true
+}
+
+export const updateTaskPositions = async (
+  input: { id: number; position: number }[],
+  client: ApolloClient<object>
+) => {
+  await client.mutate({
+    mutation: UPDATE_TASK_POSITIONS_MUTATION,
+    variables: {
+      input,
+    },
   })
 
   return true

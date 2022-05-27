@@ -199,8 +199,7 @@ export const updateTaskPositions = async ({
   input,
 }: MutationupdateTaskPositionsArgs) => {
   const taskPositions = input
-
-  await Promise.all(
+  await db.$transaction(
     taskPositions.map((taskPosition) => {
       return db.task.update({
         where: {

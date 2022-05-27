@@ -13,11 +13,13 @@ import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 import cs from 'classnames'
+import { DroppableId } from '../TasksControlPanel/TasksControlPanel'
 
 type TaskTileProps = {
   task: Task
   index: number
   userList: User[]
+  droppableId: DroppableId
   preventDragging?: boolean
 }
 
@@ -25,6 +27,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
   task,
   index,
   userList,
+  droppableId,
   preventDragging,
 }) => {
   const { title, createdAt, description, createdById, assignedToId } = task

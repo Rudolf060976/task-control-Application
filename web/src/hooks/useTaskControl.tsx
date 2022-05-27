@@ -7,8 +7,10 @@ import {
   deleteAllTasks,
   getAllUsers,
   getTasksCreatedByUser,
+  updateTaskPositions,
 } from 'src/graphql/task/services'
 import { Task, User } from 'types/graphql'
+import { filterTodoTasksByLoggedUserAndUpdatePositions } from 'src/utils/tasks'
 
 type ListType = 'todo' | 'inprogress' | 'done'
 
@@ -49,7 +51,11 @@ export const useTaskControl = (userId: number) => {
 
       setUserList(allUsers)
 
-      setTodoTaskList(myTodoTasks)
+      const sortedMyTodoTasks = myTodoTasks.sort(
+        (taskA, taskB) => taskA - taskB
+      )
+
+      setTodoTaskList(sortedMyTodoTasks)
 
       setRefreshTasks(false)
     }
@@ -72,7 +78,46 @@ export const useTaskControl = (userId: number) => {
     provided: ResponderProvided
   ) => {}
 
-  const dragEndHandler = (result: DropResult, provided: ResponderProvided) => {}
+  const dragEndHandler = (result: DropResult, provided: ResponderProvided) => {
+    const { destination, source, draggableId } = result
+
+    if (!destination) return
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return
+
+    if (
+      source.droppableId === 'todoList' &&
+      destination.droppableId === 'todoList'
+    ) {
+      const todoTask = todoTaskList.find(
+        (task) => task.id.toString() === draggableId
+      )
+
+      if (!todoTask) return
+
+      const currentTodoList = [...todoTaskList]
+
+      currentTodoList.splice(source.index, 1)
+
+      currentTodoList.splice(destination.index, 0, todoTask)
+
+      setTodoTaskList(currentTodoList)
+
+      const todoTasksCreatedByUser =
+        filterTodoTasksByLoggedUserAndUpdatePositions(currentTodoList, userId)
+
+      const taskPositions = todoTasksCreatedByUser.map((task) => ({
+        id: task.id,
+        position: task.position,
+      }))
+
+      return updateTaskPositions(taskPositions, apolloClient)
+    }
+  }
 
   const newTaskModalConfirmHandler = async (
     title: string,

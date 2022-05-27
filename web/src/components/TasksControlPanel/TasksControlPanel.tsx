@@ -11,6 +11,8 @@ import NewTaskModal from '../NewTaskModal/NewTaskModal'
 import { useTaskControl } from 'src/hooks/useTaskControl'
 import TaskToggleButton from '../TaskToggleButton/TaskToggleButton'
 
+export type DroppableId = 'todoList' | 'inprogressList' | 'doneList'
+
 type TasksControlPanelProps = {
   userId: number
 }

@@ -34,6 +34,7 @@ const DoneList: React.FC<DoneListProps> = ({ userId, tasks, userList }) => {
                 key={task.id}
                 task={task}
                 userList={userList}
+                droppableId="doneList"
               />
             )
           })}
