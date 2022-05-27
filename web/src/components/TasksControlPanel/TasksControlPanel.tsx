@@ -10,6 +10,7 @@ import { Alert, Button, Snackbar } from '@mui/material'
 import NewTaskModal from '../NewTaskModal/NewTaskModal'
 import { useTaskControl } from 'src/hooks/useTaskControl'
 import TaskToggleButton from '../TaskToggleButton/TaskToggleButton'
+import TaskCounter from '../TaskCounter/TaskCounter'
 
 export type DroppableId = 'todoList' | 'inprogressList' | 'doneList'
 
@@ -76,6 +77,9 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
       >
         <div className={styles.dragAndDropContainer}>
           <div className={cs(styles.todoContainer, styles.taskContainers)}>
+            <div className={styles.counterContainer}>
+              <TaskCounter count={todoTaskList.length} />
+            </div>
             <h1 className={styles.listTitle}>TO DO</h1>
             <ToDoList
               userId={userId}
@@ -86,6 +90,9 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
           <div
             className={cs(styles.inprogressContainer, styles.taskContainers)}
           >
+            <div className={styles.counterContainer}>
+              <TaskCounter count={inprogressTaskList.length} />
+            </div>
             <h1 className={styles.listTitle}>IN PROGRESS</h1>
             <InprogressList
               userId={userId}
@@ -94,6 +101,9 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
             />
           </div>
           <div className={cs(styles.doneContainer, styles.taskContainers)}>
+            <div className={styles.counterContainer}>
+              <TaskCounter count={doneTaskList.length} />
+            </div>
             <h1 className={styles.listTitle}>DONE</h1>
             <DoneList
               userId={userId}

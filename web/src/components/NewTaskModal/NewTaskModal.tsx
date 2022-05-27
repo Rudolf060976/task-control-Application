@@ -64,6 +64,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
       <DialogTitle>New Task</DialogTitle>
       <DialogContent>
         <TextField
+          autoFocus
           name="title"
           margin="dense"
           id="title"

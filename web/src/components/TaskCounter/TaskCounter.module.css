@@ -1,0 +1,11 @@
+.mainContainer {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 3px steelblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: steelblue;
+  color: white;
+}
