@@ -1,4 +1,5 @@
 //import type { Prisma } from '@prisma/client'
+type TaskStatus = 'todo' | 'inprogress' | 'done'
 
 import { db } from 'src/lib/db'
 
@@ -6,45 +7,39 @@ import {
   MutationcreateTaskArgs,
   MutationdeleteTaskArgs,
   MutationassignTaskArgs,
-  MutationcompleteTaskArgs,
   MutationarchiveTasksArgs,
   MutationupdateTaskPositionsArgs,
+  MutationchangeTaskStatusArgs,
 } from 'types/graphql'
 
-export const getAllTasks = async () => {
+export const getAllTasksByStatus = async (status: TaskStatus) => {
   return await db.task.findMany({
     where: {
+      status,
       isArchived: false,
     },
   })
 }
 
-export const getAllPendingTasks = async () => {
-  return await db.task.findMany({
-    where: {
-      status: 'todo',
-    },
-  })
-}
-
-export const getTasksCreatedByUser = async ({ userId }: { userId: number }) => {
-  return await db.task.findMany({
-    where: {
-      status: 'todo',
-      createdById: userId,
-    },
-  })
-}
-
-export const getTasksAssignedToUser = async ({
+export const getUserTasksByStatus = async ({
   userId,
+  status,
 }: {
   userId: number
+  status: TaskStatus
 }) => {
   return await db.task.findMany({
     where: {
-      assignedToId: userId,
-      isArchived: false,
+      OR: [
+        {
+          status,
+          createdById: userId,
+        },
+        {
+          status,
+          assignedToId: userId,
+        },
+      ],
     },
   })
 }
@@ -110,15 +105,15 @@ export const assignTask = async ({
     },
     data: {
       assignedToId: userId,
-      status: 'inprogress',
     },
   })
 }
 
-export const completeTask = async ({
+export const changeTaskStatus = async ({
   userId,
   taskId,
-}: MutationcompleteTaskArgs) => {
+  status,
+}: MutationchangeTaskStatusArgs) => {
   const existingTask = await db.task.findFirst({
     where: {
       id: taskId,
@@ -127,18 +122,34 @@ export const completeTask = async ({
 
   if (!existingTask) return null
 
-  const { status, assignedToId, isCompleted } = existingTask
+  const {
+    status: oldStatus,
+    assignedToId,
+    createdById,
+    isCompleted,
+  } = existingTask
 
-  if (status !== 'inprogress' || isCompleted || assignedToId !== userId)
-    return null
+  if (status === 'done') {
+    if (
+      oldStatus !== 'inprogress' ||
+      isCompleted ||
+      assignedToId !== userId ||
+      createdById !== userId
+    )
+      return null
+  }
+
+  if (status === 'inprogress' || status === 'todo') {
+    if (assignedToId !== userId || createdById !== userId) return null
+  }
 
   return await db.task.update({
     where: {
       id: taskId,
     },
     data: {
-      status: 'done',
-      isCompleted: true,
+      status,
+      isCompleted: status === 'done' ? true : false,
     },
   })
 }

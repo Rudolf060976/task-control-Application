@@ -1,6 +1,6 @@
-export const GET_ALL_TASKS_QUERY = gql`
-  query GetAllTasks {
-    getAllTasks {
+export const GET_ALL_TASKS_BY_STATUS_QUERY = gql`
+  query GetAllTasksByStatus($status: String!) {
+    getAllTasksByStatus(status: $status) {
       id
       createdAt
       status
@@ -10,13 +10,14 @@ export const GET_ALL_TASKS_QUERY = gql`
       assignedToId
       isCompleted
       isArchived
+      position
     }
   }
 `
 
-export const GET_PENDING_TASKS_QUERY = gql`
-  query GetAllPendingTasks {
-    getAllPendingTasks {
+export const GET_USER_TASKS_BY_STATUS_QUERY = gql`
+  query GetUserTasksByStatus($userId: Int!, $status: String!) {
+    getUserTasksByStatus(userId: $userId, status: $status) {
       id
       createdAt
       status
@@ -26,37 +27,7 @@ export const GET_PENDING_TASKS_QUERY = gql`
       assignedToId
       isCompleted
       isArchived
-    }
-  }
-`
-
-export const GET_TASKS_CREATED_BY_USER_QUERY = gql`
-  query GetTasksCreatedByUser($userId: Int!) {
-    getTasksCreatedByUser(userId: $userId) {
-      id
-      createdAt
-      status
-      title
-      description
-      createdById
-      assignedToId
-      isCompleted
-      isArchived
-    }
-  }
-`
-export const GET_TASKS_ASSIGNED_TO_USER_QUERY = gql`
-  query GetTasksAssignedToUser($userId: Int!) {
-    getTasksAssignedToUser(userId: $userId) {
-      id
-      createdAt
-      status
-      title
-      description
-      createdById
-      assignedToId
-      isCompleted
-      isArchived
+      position
     }
   }
 `

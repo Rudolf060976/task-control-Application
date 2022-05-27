@@ -10,6 +10,7 @@ export const CREATE_TASK_MUTATION = gql`
       assignedToId
       isCompleted
       isArchived
+      position
     }
   }
 `
@@ -30,12 +31,17 @@ export const ASSIGN_TASK_MUTATION = gql`
       assignedToId
       isCompleted
       isArchived
+      position
     }
   }
 `
-export const COMPLETE_TASK_MUTATION = gql`
-  mutation CompleteTaskMutation($userId: Int!, $taskId: Int!) {
-    completeTask(userId: $userId, taskId: $taskId) {
+export const CHANGE_TASK_STATUS_MUTATION = gql`
+  mutation ChangeTaskStatusMutation(
+    $userId: Int!
+    $taskId: Int!
+    $status: String!
+  ) {
+    changeTaskStatus(userId: $userId, taskId: $taskId, status: $status) {
       id
       createdAt
       status
@@ -45,6 +51,7 @@ export const COMPLETE_TASK_MUTATION = gql`
       assignedToId
       isCompleted
       isArchived
+      position
     }
   }
 `
@@ -60,6 +67,7 @@ export const UNASSIGN_TASK_MUTATION = gql`
       assignedToId
       isCompleted
       isArchived
+      position
     }
   }
 `

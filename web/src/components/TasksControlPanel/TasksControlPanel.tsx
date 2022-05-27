@@ -19,6 +19,8 @@ type TasksControlPanelProps = {
 
 export type TaskFilter = 'all' | 'mine'
 
+export type TaskStatus = 'todo' | 'inprogress' | 'done'
+
 const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
   const {
     isNewTaskModalOpen,
