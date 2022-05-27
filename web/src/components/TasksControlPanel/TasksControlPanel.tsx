@@ -20,7 +20,7 @@ type TasksControlPanelProps = {
 
 export type TaskFilter = 'all' | 'mine'
 
-export type TaskStatus = 'todo' | 'inprogress' | 'done'
+export type TaskStatus = 'todo' | 'inprogress' | 'done' | 'archived'
 
 const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
   const {

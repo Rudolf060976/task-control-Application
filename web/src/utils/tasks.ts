@@ -27,6 +27,12 @@ export const filterOtherUsersTasks = (
   )
 }
 
+export const filterUsersTasks = (tasks: Task[], userId: number): Task[] => {
+  return tasks.filter(
+    (task) => task.createdById === userId || task.assignedToId === userId
+  )
+}
+
 export const getSortedTasksByPosition = (tasks: Task[]): Task[] => {
   return [...tasks].sort((taskA, taskB) => taskA.position - taskB.position)
 }

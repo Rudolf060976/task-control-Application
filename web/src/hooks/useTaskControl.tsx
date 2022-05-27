@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react'
 import { DropResult, ResponderProvided, DragStart } from 'react-beautiful-dnd'
 import { useApolloClient } from '@apollo/client'
-import { TaskFilter } from 'src/components/TasksControlPanel/TasksControlPanel'
+import {
+  DroppableId,
+  TaskFilter,
+  TaskStatus,
+} from 'src/components/TasksControlPanel/TasksControlPanel'
 import {
   assignTask,
   createTask,
@@ -11,10 +15,12 @@ import {
   getUserTasksByStatus,
   updateTaskPositions,
   changeTaskStatus,
+  unAssignTask,
 } from 'src/graphql/task/services'
 import { Task, User } from 'types/graphql'
 import {
   filterOtherUsersTasks,
+  filterUsersTasks,
   filterUserTasksAndUpdatePositions,
 } from 'src/utils/tasks'
 
@@ -53,25 +59,20 @@ export const useTaskControl = (userId: number) => {
     const allUsers = await getAllUsers(apolloClient)
 
     if (taskFilter === 'mine') {
-      const myTodoTasks = await getUserTasksByStatus(
-        userId,
-        'todo',
-        apolloClient
-      )
+      const sortedTodoTasks = (await updateTaskLists(
+        taskFilter,
+        'todo'
+      )) as Task[]
 
-      const myInprogressTasks = await getUserTasksByStatus(
-        userId,
-        'inprogress',
-        apolloClient
-      )
+      const sortedInprogressTasks = (await updateTaskLists(
+        taskFilter,
+        'inprogress'
+      )) as Task[]
 
-      const sortedTodoTasks = [...myTodoTasks].sort(
-        (taskA: Task, taskB: Task) => taskA.position - taskB.position
-      )
-
-      const sortedInprogressTasks = [...myInprogressTasks].sort(
-        (taskA: Task, taskB: Task) => taskA.position - taskB.position
-      )
+      const sortedDoneTasks = (await updateTaskLists(
+        taskFilter,
+        'done'
+      )) as Task[]
 
       setUserList(allUsers)
 
@@ -79,43 +80,78 @@ export const useTaskControl = (userId: number) => {
 
       setInprogressTaskList(sortedInprogressTasks)
 
+      setDoneTaskList(sortedDoneTasks)
+
       return setRefreshTasks(false)
     }
 
-    const allTodoTasks = await getAllTasksByStatus('todo', apolloClient)
+    const {
+      sortedUserTasks: sortedUserTodoTasks,
+      otherUsersTasks: otherUsersTodoTasks,
+    } = (await updateTaskLists('all', 'todo')) as {
+      sortedUserTasks: Task[]
+      otherUsersTasks: Task[]
+    }
 
-    const allInprogressTasks = await getAllTasksByStatus(
-      'inprogress',
-      apolloClient
-    )
+    const {
+      sortedUserTasks: sortedUserInprogressTasks,
+      otherUsersTasks: otherUsersInprogressTasks,
+    } = (await updateTaskLists('all', 'inprogress')) as {
+      sortedUserTasks: Task[]
+      otherUsersTasks: Task[]
+    }
 
-    const otherUsersTodoTasks = filterOtherUsersTasks(allTodoTasks, userId)
-
-    const userTodoTasks = filterUserTasksAndUpdatePositions(
-      allTodoTasks,
-      userId
-    )
-
-    const otherUsersInprogressTasks = filterOtherUsersTasks(
-      allInprogressTasks,
-      userId
-    )
-
-    const userInprogressTasks = filterUserTasksAndUpdatePositions(
-      allInprogressTasks,
-      userId
-    )
+    const {
+      sortedUserTasks: sortedUserDoneTasks,
+      otherUsersTasks: otherUsersDoneTasks,
+    } = (await updateTaskLists('all', 'done')) as {
+      sortedUserTasks: Task[]
+      otherUsersTasks: Task[]
+    }
 
     setUserList(allUsers)
 
-    setTodoTaskList([...userTodoTasks, ...otherUsersTodoTasks])
+    setTodoTaskList([...sortedUserTodoTasks, ...otherUsersTodoTasks])
 
     setInprogressTaskList([
-      ...userInprogressTasks,
+      ...sortedUserInprogressTasks,
       ...otherUsersInprogressTasks,
     ])
 
+    setDoneTaskList([...sortedUserDoneTasks, ...otherUsersDoneTasks])
+
     setRefreshTasks(false)
+  }
+
+  const updateTaskLists = async (
+    taskFilter: TaskFilter,
+    taskStatus: TaskStatus
+  ) => {
+    if (taskFilter === 'mine') {
+      const userTasks = await getUserTasksByStatus(
+        userId,
+        taskStatus,
+        apolloClient
+      )
+
+      const sortedTasks = [...userTasks].sort(
+        (taskA: Task, taskB: Task) => taskA.position - taskB.position
+      )
+
+      return sortedTasks
+    }
+
+    const allTasks = await getAllTasksByStatus(taskStatus, apolloClient)
+
+    const otherUsersTasks = filterOtherUsersTasks(allTasks, userId)
+
+    const userTasks = filterUsersTasks(allTasks, userId)
+
+    const sortedUserTasks = [...userTasks].sort(
+      (taskA: Task, taskB: Task) => taskA.position - taskB.position
+    )
+
+    return { sortedUserTasks, otherUsersTasks }
   }
 
   const addTaskToList = (listType: ListType, task: Task) => {
@@ -146,90 +182,199 @@ export const useTaskControl = (userId: number) => {
     )
       return
 
-    if (
-      source.droppableId === 'todoList' &&
-      destination.droppableId === 'todoList'
-    ) {
-      const todoTask = todoTaskList.find(
-        (task) => task.id.toString() === draggableId
+    if (source.droppableId === destination.droppableId) {
+      handleDraggingOnTheSameDroppable(
+        source.droppableId,
+        source.index,
+        destination.index,
+        draggableId
       )
-
-      if (!todoTask) return
-
-      const currentTodoList = [...todoTaskList]
-
-      currentTodoList.splice(source.index, 1)
-
-      currentTodoList.splice(destination.index, 0, todoTask)
-
-      setTodoTaskList(currentTodoList)
-
-      const userTodoTasks = filterUserTasksAndUpdatePositions(
-        currentTodoList,
-        userId
-      )
-
-      const taskPositions = userTodoTasks.map((task) => ({
-        id: task.id,
-        position: task.position,
-      }))
-
-      return updateTaskPositions(taskPositions, apolloClient)
+      return
     }
 
-    if (
-      source.droppableId === 'todoList' &&
-      destination.droppableId === 'inprogressList'
-    ) {
-      const todoTask = todoTaskList.find(
-        (task) => task.id.toString() === draggableId
+    if (source.droppableId !== destination.droppableId) {
+      handleDraggingFromOneDroppableToAnother(
+        draggableId,
+        source.droppableId,
+        destination.droppableId,
+        destination.index
       )
+    }
+  }
 
-      const inprogressTask = {
-        ...todoTask,
-        status: 'inprogress',
-        assignedToId: userId,
-      }
+  const handleDraggingOnTheSameDroppable = (
+    droppableId: DroppableId,
+    sourceIndex: number,
+    destinationIndex: number,
+    draggableId: string
+  ): void => {
+    let taskList
+    let setTaskList
 
-      const filteredTodoTaskList = [...todoTaskList].filter(
-        (task) => task.id.toString() !== draggableId
-      )
+    switch (droppableId) {
+      case 'todoList':
+        taskList = [...todoTaskList]
+        setTaskList = setTodoTaskList
 
-      const newInProgressList = [...inprogressTaskList].splice(
-        destination.index,
-        0,
-        inprogressTask
-      )
-      setTodoTaskList(filteredTodoTaskList)
-      setInprogressTaskList(newInProgressList)
+        break
 
-      const userInprogressTasks = filterUserTasksAndUpdatePositions(
-        newInProgressList,
-        userId
-      )
+      case 'inprogressList':
+        taskList = [...inprogressTaskList]
+        setTaskList = setInprogressTaskList
 
-      const taskPositions = userInprogressTasks.map((task) => ({
-        id: task.id,
-        position: task.position,
-      }))
+        break
 
-      const updateTask = async () => {
-        await assignTask(userId, inprogressTask.id, apolloClient)
+      case 'doneList':
+        taskList = [...doneTaskList]
+        setTaskList = setDoneTaskList
 
+        break
+
+      default:
+        return
+    }
+
+    const draggedTask = taskList.find(
+      (task) => task.id.toString() === draggableId
+    )
+
+    if (!draggedTask) return
+
+    taskList.splice(sourceIndex, 1)
+
+    taskList.splice(destinationIndex, 0, draggedTask)
+
+    setTaskList(taskList)
+
+    const userTasks = filterUserTasksAndUpdatePositions(taskList, userId)
+
+    const taskPositions = userTasks.map((task) => ({
+      id: task.id,
+      position: task.position,
+    }))
+
+    updateTaskPositions(taskPositions, apolloClient)
+  }
+
+  const handleDraggingFromOneDroppableToAnother = (
+    draggableId: string,
+    sourceDroppableId: DroppableId,
+    destinationDroppableId: DroppableId,
+    destinationIndex: number
+  ) => {
+    let sourceTaskList
+    let setSourceTaskList
+    let destinationTaskList
+    let setDestinationTaskList
+    let destinationStatus: TaskStatus
+
+    switch (sourceDroppableId) {
+      case 'todoList':
+        sourceTaskList = [...todoTaskList]
+        setSourceTaskList = setTodoTaskList
+        break
+
+      case 'inprogressList':
+        sourceTaskList = [...inprogressTaskList]
+        setSourceTaskList = setInprogressTaskList
+
+        break
+
+      case 'doneList':
+        sourceTaskList = [...doneTaskList]
+        setSourceTaskList = setDoneTaskList
+
+        break
+
+      default:
+        return
+    }
+
+    switch (destinationDroppableId) {
+      case 'todoList':
+        destinationTaskList = [...todoTaskList]
+        setDestinationTaskList = setTodoTaskList
+        destinationStatus = 'todo'
+        break
+
+      case 'inprogressList':
+        destinationTaskList = [...inprogressTaskList]
+        setDestinationTaskList = setInprogressTaskList
+        destinationStatus = 'inprogress'
+        break
+
+      case 'doneList':
+        destinationTaskList = [...doneTaskList]
+        setDestinationTaskList = setDoneTaskList
+        destinationStatus = 'done'
+        break
+
+      default:
+        return
+    }
+    const draggableTask = sourceTaskList.find(
+      (task) => task.id.toString() === draggableId
+    )
+
+    const getAssignedToId = () => {
+      if (destinationStatus === 'todo') return null
+      if (destinationStatus === 'inprogress' || destinationStatus === 'done')
+        return userId
+    }
+
+    const destinationTask = {
+      ...draggableTask,
+      status: destinationStatus,
+      assignedToId: getAssignedToId,
+    }
+
+    const filteredSourceTaskList = [...sourceTaskList].filter(
+      (task) => task.id.toString() !== draggableId
+    )
+
+    const newDestinationList = [...destinationTaskList].splice(
+      destinationIndex,
+      0,
+      destinationTask
+    )
+    setSourceTaskList(filteredSourceTaskList)
+    setDestinationTaskList(newDestinationList)
+
+    const userDestinationTasks = filterUserTasksAndUpdatePositions(
+      newDestinationList,
+      userId
+    )
+
+    const taskPositions = userDestinationTasks.map((task) => ({
+      id: task.id,
+      position: task.position,
+    }))
+
+    const updateTask = async () => {
+      if (destinationStatus === 'inprogress') {
+        await assignTask(userId, destinationTask.id, apolloClient)
         await changeTaskStatus(
           userId,
-          inprogressTask.id,
+          destinationTask.id,
           'inprogress',
           apolloClient
         )
-
-        await updateTaskPositions(taskPositions, apolloClient)
-
-        setRefreshTasks(true)
+      }
+      if (destinationStatus === 'todo') {
+        await unAssignTask(destinationTask.id, apolloClient)
+        await changeTaskStatus(userId, destinationTask.id, 'todo', apolloClient)
       }
 
-      updateTask()
+      if (destinationStatus === 'done') {
+        await changeTaskStatus(userId, destinationTask.id, 'done', apolloClient)
+      }
+
+      await updateTaskPositions(taskPositions, apolloClient)
+
+      setRefreshTasks(true)
     }
+
+    updateTask()
   }
 
   const newTaskModalConfirmHandler = async (

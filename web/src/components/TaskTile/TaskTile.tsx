@@ -19,6 +19,7 @@ type TaskTileProps = {
   task: Task
   index: number
   userList: User[]
+  userId: number
   droppableId: DroppableId
   preventDragging?: boolean
 }
@@ -27,6 +28,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
   task,
   index,
   userList,
+  userId,
   droppableId,
   preventDragging,
 }) => {
@@ -42,7 +44,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
     <Draggable
       draggableId={task.id.toString()}
       index={index}
-      isDragDisabled={false}
+      isDragDisabled={preventDragging}
     >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
         return (
@@ -51,6 +53,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
             ref={provided.innerRef}
             className={cs(styles.mainContainer, {
               [styles.isDragging]: snapshot.isDragging,
+              [styles.preventDragging]: preventDragging,
             })}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -63,10 +66,14 @@ const TaskTile: React.FC<TaskTileProps> = ({
               10
             )}`}</span>
             <span
-              className={styles.creatorArea}
+              className={cs(styles.creatorArea, {
+                [styles.myTask]: userId === task.createdById,
+              })}
             >{`Author: ${creatorUser}`}</span>
             <span
-              className={styles.assignedArea}
+              className={cs(styles.assignedArea, {
+                [styles.myTask]: userId === task.assignedToId,
+              })}
             >{`Assigned To: ${assignedToUser}`}</span>
             <span className={styles.descripArea}>
               {`Description:`}

@@ -1,3 +1,4 @@
+import { useAuth } from '@redwoodjs/auth'
 import React from 'react'
 
 import styles from './Header.module.css'
@@ -7,11 +8,14 @@ type HeaderProps = {
 }
 
 const Header: React.FC<HeaderProps> = ({ userName }) => {
+  const { logOut } = useAuth()
+
   return (
     <div className={styles.mainContainer}>
       <div className={styles.appNameContainer}>APP NAME</div>
       <div className={styles.userContainer}>USER NAME ${userName}</div>
       <div className={styles.navContainer}>NAV LINKS</div>
+      <button onClick={() => logOut()}>Log Out</button>
     </div>
   )
 }

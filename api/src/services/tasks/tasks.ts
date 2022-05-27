@@ -1,5 +1,4 @@
 //import type { Prisma } from '@prisma/client'
-type TaskStatus = 'todo' | 'inprogress' | 'done'
 
 import { db } from 'src/lib/db'
 
@@ -10,9 +9,13 @@ import {
   MutationarchiveTasksArgs,
   MutationupdateTaskPositionsArgs,
   MutationchangeTaskStatusArgs,
+  QuerygetAllTasksByStatusArgs,
+  QuerygetUserTasksByStatusArgs,
 } from 'types/graphql'
 
-export const getAllTasksByStatus = async (status: TaskStatus) => {
+export const getAllTasksByStatus = async ({
+  status,
+}: QuerygetAllTasksByStatusArgs) => {
   return await db.task.findMany({
     where: {
       status,
@@ -22,22 +25,22 @@ export const getAllTasksByStatus = async (status: TaskStatus) => {
 }
 
 export const getUserTasksByStatus = async ({
-  userId,
   status,
-}: {
-  userId: number
-  status: TaskStatus
-}) => {
+  userId,
+}: QuerygetUserTasksByStatusArgs) => {
   return await db.task.findMany({
     where: {
+      status,
       OR: [
         {
-          status,
-          createdById: userId,
+          createdById: {
+            equals: userId,
+          },
         },
         {
-          status,
-          assignedToId: userId,
+          assignedToId: {
+            equals: userId,
+          },
         },
       ],
     },
@@ -133,14 +136,13 @@ export const changeTaskStatus = async ({
     if (
       oldStatus !== 'inprogress' ||
       isCompleted ||
-      assignedToId !== userId ||
-      createdById !== userId
+      (assignedToId !== userId && createdById !== userId)
     )
       return null
   }
 
   if (status === 'inprogress' || status === 'todo') {
-    if (assignedToId !== userId || createdById !== userId) return null
+    if (assignedToId !== userId && createdById !== userId) return null
   }
 
   return await db.task.update({
@@ -150,6 +152,7 @@ export const changeTaskStatus = async ({
     data: {
       status,
       isCompleted: status === 'done' ? true : false,
+      isArchived: status === 'archived' ? true : false,
     },
   })
 }

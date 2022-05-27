@@ -34,6 +34,7 @@ const ToDoList: React.FC<ToDoListProps> = ({ userId, tasks, userList }) => {
                 index={index}
                 task={task}
                 userList={userList}
+                userId={userId}
                 droppableId="todoList"
               />
             )
