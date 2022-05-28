@@ -16,7 +16,8 @@ model User {
   resetToken          String?
   resetTokenExpiresAt DateTime?
   createdTasks        Task[]    @relation("createdByUser")
-  assignedTasks       Task[]    @relation("assignedToUser")
+  completedTasks      Task[]    @relation("completedByUser")
+  assignedTasks       TasksOnUsers[]
 }
 
 model Task {
@@ -27,9 +28,21 @@ model Task {
   description         String
   createdBy           User      @relation("createdByUser", fields: [createdById], references: [id])
   createdById         Int
-  assignedTo          User?     @relation("assignedToUser", fields: [assignedToId], references: [id])
-  assignedToId        Int?
+  assignedUsers       TasksOnUsers[]
   isCompleted         Boolean   @default(false)
   isArchived          Boolean   @default(false)
   position            Int       @default(0)
+  completedBy         User?      @relation("completedByUser", fields: [completedById], references: [id])
+  completedById       Int?
+  completedAt         DateTime?
+}
+
+model TasksOnUsers {
+  user                User      @relation(fields: [userId], references: [id])
+  userId              Int
+  task                Task      @relation(fields: [taskId], references: [id])
+  taskId              Int
+  assignedAt          DateTime  @default(now())
+
+  @@id([userId, taskId])
 }

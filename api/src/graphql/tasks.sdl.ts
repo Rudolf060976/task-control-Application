@@ -6,10 +6,11 @@ export const schema = gql`
     title: String!
     description: String!
     createdById: Int!
-    assignedToId: Int
     isCompleted: Boolean
     isArchived: Boolean
     position: Int!
+    completedById: Int
+    completedAt: DateTime
   }
 
   input CreateTaskInput {

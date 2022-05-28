@@ -13,6 +13,7 @@ export const schema = gql`
     user(id: Int!): User @requireAuth
     getAllTasksByStatus(status: String!): [Task!]! @skipAuth
     getUserTasksByStatus(userId: Int!, status: String!): [Task!]! @skipAuth
+    getAssignedUsersByTask(taskId: Int!): [User!]! @skipAuth
   }
 
   input CreateUserInput {
@@ -37,12 +38,13 @@ export const schema = gql`
     deleteUser(id: Int!): User! @requireAuth
     createTask(userId: Int!, input: CreateTaskInput!): Task! @skipAuth
     deleteTask(userId: Int!, taskId: Int!): Boolean! @skipAuth
-    assignTask(userId: Int!, taskId: Int!): Task @skipAuth
+    assignTask(userIds: [Int!]!, taskId: Int!): Boolean! @skipAuth
     changeTaskStatus(userId: Int!, taskId: Int!, status: String!): Task
       @skipAuth
     unassignTask(taskId: Int!): Task @skipAuth
     archiveTasks(taskIds: [Int!]!): Boolean! @skipAuth
     updateTaskPositions(input: [TaskPositionInput!]!): Boolean! @skipAuth
+    unassignTaskByUser(taskId: Int!, userId: Int!): Boolean! @skipAuth
     deleteAllTasks: Boolean! @skipAuth
   }
 `

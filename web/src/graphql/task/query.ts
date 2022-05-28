@@ -7,10 +7,11 @@ export const GET_ALL_TASKS_BY_STATUS_QUERY = gql`
       title
       description
       createdById
-      assignedToId
       isCompleted
       isArchived
       position
+      completedById
+      completedAt
     }
   }
 `
@@ -24,10 +25,19 @@ export const GET_USER_TASKS_BY_STATUS_QUERY = gql`
       title
       description
       createdById
-      assignedToId
       isCompleted
       isArchived
       position
+      completedById
+      completedAt
+    }
+  }
+`
+export const GET_ASSIGNED_USERS_BY_TASK_QUERY = gql`
+  query GetAssignedUsersByTask($taskId: Int!) {
+    getAssignedUsersByTask(taskId: $taskId) {
+      id
+      email
     }
   }
 `

@@ -2,16 +2,20 @@ import { ApolloClient } from '@apollo/client'
 import { TaskStatus } from 'src/components/TasksControlPanel/TasksControlPanel'
 import { Task, User } from 'types/graphql'
 import {
+  ARCHIVE_TASKS_MUTATION,
   ASSIGN_TASK_MUTATION,
   CHANGE_TASK_STATUS_MUTATION,
   CREATE_TASK_MUTATION,
   DELETE_ALL_TASKS_MUTATION,
+  DELETE_TASK_MUTATION,
+  UNASSIGN_TASK_BY_USER_MUTATION,
   UNASSIGN_TASK_MUTATION,
   UPDATE_TASK_POSITIONS_MUTATION,
 } from './mutation'
 import {
   GET_ALL_TASKS_BY_STATUS_QUERY,
   GET_ALL_USERS,
+  GET_ASSIGNED_USERS_BY_TASK_QUERY,
   GET_USER_TASKS_BY_STATUS_QUERY,
 } from './query'
 
@@ -56,6 +60,21 @@ export const getAllTasksByStatus = async (
   })
 
   return queryResults.data.getAllTasksByStatus
+}
+
+export const getAssignedUsersByTask = async (
+  taskId: number,
+  client: ApolloClient<object>
+): Promise<Task[]> => {
+  const queryResults = await client.query({
+    query: GET_ASSIGNED_USERS_BY_TASK_QUERY,
+    variables: {
+      taskId,
+    },
+    fetchPolicy: 'network-only',
+  })
+
+  return queryResults.data.getAssignedUsersByTask
 }
 
 export const createTask = async (
@@ -103,14 +122,14 @@ export const updateTaskPositions = async (
 }
 
 export const assignTask = async (
-  userId: number,
+  userIds: number[],
   taskId: number,
   client: ApolloClient<object>
 ): Promise<Task> => {
   const mutationResults = await client.mutate({
     mutation: ASSIGN_TASK_MUTATION,
     variables: {
-      userId,
+      userIds,
       taskId,
     },
   })
@@ -136,7 +155,7 @@ export const changeTaskStatus = async (
   return mutationResults.data.changeTaskStatus
 }
 
-export const unAssignTask = async (
+export const unassignTask = async (
   taskId: number,
   client: ApolloClient<object>
 ): Promise<Task> => {
@@ -148,4 +167,50 @@ export const unAssignTask = async (
   })
 
   return mutationResults.data.unassignTask
+}
+
+export const unassignTaskByUser = async (
+  taskId: number,
+  userId: number,
+  client: ApolloClient<object>
+): Promise<Task> => {
+  const mutationResults = await client.mutate({
+    mutation: UNASSIGN_TASK_BY_USER_MUTATION,
+    variables: {
+      taskId,
+      userId,
+    },
+  })
+
+  return mutationResults.data.unassignTaskByUser
+}
+
+export const archiveTasks = async (
+  taskIds: number[],
+  client: ApolloClient<object>
+): Promise<Task> => {
+  const mutationResults = await client.mutate({
+    mutation: ARCHIVE_TASKS_MUTATION,
+    variables: {
+      taskIds,
+    },
+  })
+
+  return mutationResults.data.archiveTasks
+}
+
+export const deleteTask = async (
+  userId: number[],
+  taskId: number,
+  client: ApolloClient<object>
+): Promise<Task> => {
+  const mutationResults = await client.mutate({
+    mutation: DELETE_TASK_MUTATION,
+    variables: {
+      userId,
+      taskId,
+    },
+  })
+
+  return mutationResults.data.deleteTask
 }

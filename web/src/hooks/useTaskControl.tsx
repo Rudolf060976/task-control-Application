@@ -15,7 +15,7 @@ import {
   getUserTasksByStatus,
   updateTaskPositions,
   changeTaskStatus,
-  unAssignTask,
+  unassignTask,
 } from 'src/graphql/task/services'
 import { Task, User } from 'types/graphql'
 import {
@@ -361,7 +361,7 @@ export const useTaskControl = (userId: number) => {
         )
       }
       if (destinationStatus === 'todo') {
-        await unAssignTask(destinationTask.id, apolloClient)
+        await unassignTask(destinationTask.id, apolloClient)
         await changeTaskStatus(userId, destinationTask.id, 'todo', apolloClient)
       }
 
