@@ -39,6 +39,8 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     userList,
     inprogressTaskList,
     doneTaskList,
+    isTodoListDropDisabled,
+    isDoneListDropDisabled,
   } = useTaskControl(userId)
 
   return (
@@ -85,6 +87,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
               userId={userId}
               tasks={todoTaskList}
               userList={userList}
+              isDropDisabled={isTodoListDropDisabled}
             />
           </div>
           <div
@@ -109,6 +112,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
               userId={userId}
               tasks={doneTaskList}
               userList={userList}
+              isDropDisabled={isDoneListDropDisabled}
             />
           </div>
         </div>

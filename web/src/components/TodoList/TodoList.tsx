@@ -14,11 +14,17 @@ type ToDoListProps = {
   userId: number
   userList: User[]
   tasks: Task[]
+  isDropDisabled: boolean
 }
 
-const ToDoList: React.FC<ToDoListProps> = ({ userId, tasks, userList }) => {
+const ToDoList: React.FC<ToDoListProps> = ({
+  userId,
+  tasks,
+  userList,
+  isDropDisabled,
+}) => {
   return (
-    <Droppable droppableId="todoList">
+    <Droppable droppableId="todoList" isDropDisabled={isDropDisabled}>
       {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
         <ul
           {...provided.droppableProps}

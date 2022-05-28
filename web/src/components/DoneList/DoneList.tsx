@@ -14,11 +14,17 @@ type DoneListProps = {
   userId: number
   userList: User[]
   tasks: Task[]
+  isDropDisabled: boolean
 }
 
-const DoneList: React.FC<DoneListProps> = ({ userId, tasks, userList }) => {
+const DoneList: React.FC<DoneListProps> = ({
+  userId,
+  tasks,
+  userList,
+  isDropDisabled,
+}) => {
   return (
-    <Droppable droppableId="doneList">
+    <Droppable droppableId="doneList" isDropDisabled={isDropDisabled}>
       {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
         <ul
           ref={provided.innerRef}

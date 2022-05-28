@@ -39,6 +39,9 @@ export const useTaskControl = (userId: number) => {
 
   const [userList, setUserList] = useState<User[]>([])
 
+  const [currentSourceDragDroppable, setCurrentSourceDragDroppable] =
+    useState<DroppableId | null>(null)
+
   const apolloClient = useApolloClient()
 
   useEffect(() => {
@@ -166,13 +169,16 @@ export const useTaskControl = (userId: number) => {
     }
   }
 
-  const dragStartHandler = (
-    initial: DragStart,
-    provided: ResponderProvided
-  ) => {}
+  const dragStartHandler = (initial: DragStart) => {
+    const droppableId = initial.source.droppableId
 
-  const dragEndHandler = (result: DropResult, provided: ResponderProvided) => {
+    setCurrentSourceDragDroppable(droppableId)
+  }
+
+  const dragEndHandler = (result: DropResult) => {
     const { destination, source, draggableId } = result
+
+    setCurrentSourceDragDroppable(null)
 
     if (!destination) return
 
@@ -408,6 +414,10 @@ export const useTaskControl = (userId: number) => {
     setRefreshTasks(true)
   }
 
+  const isTodoListDropDisabled = currentSourceDragDroppable === 'doneList'
+
+  const isDoneListDropDisabled = currentSourceDragDroppable === 'todoList'
+
   return {
     isNewTaskModalOpen,
     setIsNewTaskModalOpen,
@@ -424,5 +434,7 @@ export const useTaskControl = (userId: number) => {
     doneTaskList,
     deleteAllTasksHandler,
     userList,
+    isTodoListDropDisabled,
+    isDoneListDropDisabled,
   }
 }
