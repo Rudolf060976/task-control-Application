@@ -131,4 +131,9 @@
   cursor: pointer !important;
 }
 
+.userListTooltipList {
+  list-style: none;
+  padding: 0;
+}
+
 

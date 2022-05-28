@@ -133,6 +133,14 @@ const TaskTile: React.FC<TaskTileProps> = ({
     return false
   }
 
+  const getIsDisableAssignedToTooltipHover = () => {
+    if (isAssignedToMe && assignedUsers.length === 1) return true
+
+    if (!isAssignedToMe && assignedUsers.length === 0) return true
+
+    return false
+  }
+
   return (
     <Draggable
       draggableId={task.id.toString()}
@@ -168,25 +176,42 @@ const TaskTile: React.FC<TaskTileProps> = ({
                 {isCreatedByMe ? 'ME' : creatorUser}
               </span>
             </span>
-            <span className={styles.assignedArea}>
-              Assigned to:
-              <span
-                className={cs(styles.assignedToTitle, {
-                  [styles.assignedToMe]: isAssignedToMe,
-                  [styles.assignedToMoreUsers]:
-                    (assignedUsers.length === 1 && !isAssignedToMe) ||
-                    assignedUsers.length > 1,
-                })}
-              >
-                {getAssignedTo()}
+            <HtmlTooltip
+              disableHoverListener={getIsDisableAssignedToTooltipHover()}
+              title={
+                <>
+                  <Typography fontSize={12} color="inherit">
+                    Assigned Users:
+                  </Typography>
+                  <ul className={styles.userListTooltipList}>
+                    {assignedUsers.map((user) => {
+                      return <li key={user.id}>{user.email}</li>
+                    })}
+                  </ul>
+                </>
+              }
+            >
+              <span className={styles.assignedArea}>
+                Assigned to:
+                <span
+                  className={cs(styles.assignedToTitle, {
+                    [styles.assignedToMe]: isAssignedToMe,
+                    [styles.assignedToMoreUsers]:
+                      (assignedUsers.length === 1 && !isAssignedToMe) ||
+                      assignedUsers.length > 1,
+                  })}
+                >
+                  {getAssignedTo()}
+                </span>
               </span>
-            </span>
+            </HtmlTooltip>
+
             <span className={styles.descripArea}>
               {`Description:`}
               <HtmlTooltip
                 title={
                   <>
-                    <Typography fontSize={14} color="inherit">
+                    <Typography fontSize={12} color="inherit">
                       Description:
                     </Typography>
                     <p>{description}</p>
