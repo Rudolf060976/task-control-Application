@@ -31,10 +31,12 @@
 
 .creatorArea {
   grid-area: creator;
+  font-weight: bold;
 }
 
 .assignedArea {
   grid-area: assigned;
+  font-weight: bold;
 }
 
 .descripArea {
@@ -43,7 +45,7 @@
 
 .descriptionIcon {
   margin-left: 10px !important;
-  color: steelblue;
+  color: darkgreen;
   cursor: pointer;
 }
 .dragIcon {
@@ -57,12 +59,63 @@
   opacity: 0.7;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
 }
+.preventDragging {
+  background-color: rgb(245, 241, 241);
+}
 
-.myTask {
+.createdByTitle {
+  margin-left: 3px;
+  color: black;
+  font-weight: bold;
+}
+
+.createdByMe .assignedToMe {
   color: darkolivegreen;
   font-weight: bold;
 }
 
-.preventDragging {
-  background-color: rgb(245, 241, 241);
+.assignedToMoreUsers {
+  text-decoration: underline;
 }
+
+.editUsersIcon, .deleteUsersIcon, .assignMeIcon {
+  display: inline-block !important;
+  margin-left: 10px !important;
+  color: gray !important;
+  cursor: default !important;
+  background-color: white !important;
+  border-radius: 50% !important;
+  font-size: 22px !important;
+  padding: 2px !important;
+  box-shadow: 0px 0px 3px gray !important;
+}
+
+.editUsersIconActive {
+  color: white !important;
+  background-color: darkgreen !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+.deleteUsersIconActive {
+  color: white !important;
+  background-color: red !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+.assignMeIconActive {
+  color: white !important;
+  background-color: darkgreen !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+.unassignMeIconActive {
+  color: white !important;
+  background-color: red !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+

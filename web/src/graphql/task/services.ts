@@ -65,7 +65,7 @@ export const getAllTasksByStatus = async (
 export const getAssignedUsersByTask = async (
   taskId: number,
   client: ApolloClient<object>
-): Promise<Task[]> => {
+): Promise<User[]> => {
   const queryResults = await client.query({
     query: GET_ASSIGNED_USERS_BY_TASK_QUERY,
     variables: {
