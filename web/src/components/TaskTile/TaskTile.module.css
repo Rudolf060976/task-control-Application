@@ -5,11 +5,12 @@
   grid-template-areas:
   "title   title   title    title"
   "date    date    date     date "
-  "creator creator assigned assigned"
+  "creator creator creator buttons"
+  "assigned assigned assigned buttons"
   "descrip descrip descrip  descrip";
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: repeat(4, auto);
-  gap: 0px 0px;
+  grid-template-rows: repeat(5, auto);
+  gap: 3px 0px;
   font-size: 10px;
   padding: 10px;
   position: relative;
@@ -43,6 +44,13 @@
   grid-area: descrip;
 }
 
+.buttonsArea {
+  grid-area: buttons;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .descriptionIcon {
   margin-left: 10px !important;
   color: darkgreen;
@@ -69,18 +77,23 @@
   font-weight: bold;
 }
 
-.createdByMe .assignedToMe {
+.createdByMe, .assignedToMe {
   color: darkolivegreen;
   font-weight: bold;
+  font-size: 12px;
+  margin-left: 5px;
 }
 
 .assignedToMoreUsers {
+  color: darkolivegreen;
+  font-weight: bold;
+  font-size: 12px;
+  margin-left: 5px;
   text-decoration: underline;
 }
 
 .editUsersIcon, .deleteUsersIcon, .assignMeIcon {
   display: inline-block !important;
-  margin-left: 10px !important;
   color: gray !important;
   cursor: default !important;
   background-color: white !important;

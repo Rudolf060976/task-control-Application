@@ -32,9 +32,6 @@ const InprogressList: React.FC<InprogressListProps> = ({
           {...provided.droppableProps}
         >
           {tasks.map((task, index) => {
-            const preventDragging =
-              task.createdById !== userId && task.assignedToId !== userId
-
             return (
               <TaskTile
                 key={task.id}
@@ -43,7 +40,6 @@ const InprogressList: React.FC<InprogressListProps> = ({
                 userList={userList}
                 userId={userId}
                 droppableId="inprogressList"
-                preventDragging={preventDragging}
               />
             )
           })}

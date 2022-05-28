@@ -111,6 +111,7 @@ export const deleteTask = async ({
 }
 
 export const deleteAllTasks = async () => {
+  await db.tasksOnUsers.deleteMany()
   await db.task.deleteMany()
   return true
 }
@@ -125,13 +126,13 @@ export const assignTask = async ({
     },
   })
 
-  if (!existingTask) return null
+  if (!existingTask) return false
 
   const { status, isCompleted } = existingTask
 
-  if (status !== 'todo' || isCompleted) return null
+  if (status !== 'todo' || isCompleted) return false
 
-  return await db.task.update({
+  await db.task.update({
     where: {
       id: taskId,
     },
@@ -140,11 +141,11 @@ export const assignTask = async ({
         deleteMany: {},
         create: userIds.map((userId) => ({
           userId,
-          taskId,
         })),
       },
     },
   })
+  return true
 }
 
 export const changeTaskStatus = async ({
@@ -176,7 +177,12 @@ export const changeTaskStatus = async ({
   }
 
   if (status === 'inprogress' || status === 'todo') {
-    if (!isTaskAssignedToUser && createdById !== userId) return null
+    if (
+      !isTaskAssignedToUser &&
+      createdById !== userId &&
+      assignedUsers.length > 0
+    )
+      return null
   }
 
   if (status === 'archived') {
@@ -190,7 +196,7 @@ export const changeTaskStatus = async ({
       }
     }
 
-    return null
+    return
   }
 
   return await db.task.update({
@@ -199,8 +205,8 @@ export const changeTaskStatus = async ({
     },
     data: {
       status,
-      isCompleted: status === 'done' ? true : false,
-      isArchived: status === 'archived' ? true : false,
+      isCompleted: status === 'done',
+      isArchived: status === 'archived',
       completedBy: getCompletedBy(),
       completedAt: status === 'done' ? null : new Date(),
     },
@@ -290,11 +296,11 @@ export const unassignTaskByUser = async ({
     },
   })
 
-  if (!existingTask) return null
+  if (!existingTask) return false
 
   const { isCompleted } = existingTask
 
-  if (isCompleted) return null
+  if (isCompleted) return false
 
   const assignedUsers = await getAssignedUsersByTask({ taskId })
 

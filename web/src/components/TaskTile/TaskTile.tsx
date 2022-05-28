@@ -26,7 +26,6 @@ type TaskTileProps = {
   userList: User[]
   userId: number
   droppableId: DroppableId
-  preventDragging?: boolean
 }
 
 const TaskTile: React.FC<TaskTileProps> = ({
@@ -35,7 +34,6 @@ const TaskTile: React.FC<TaskTileProps> = ({
   userList,
   userId,
   droppableId,
-  preventDragging,
 }) => {
   const [assignedUsers, setAssignedUsers] = useState<User[]>([])
 
@@ -64,10 +62,10 @@ const TaskTile: React.FC<TaskTileProps> = ({
     if (isAssignedToMe) {
       if (assignedUsers.length === 1) return 'ME'
 
-      return `ME and ${assignedUsers.length - 1} Users`
+      return `ME and ${assignedUsers.length - 1} User(s)`
     }
 
-    if (assignedUsers.length > 0) return `${assignedUsers.length} Users`
+    if (assignedUsers.length > 0) return `${assignedUsers.length} User(s)`
 
     return ''
   }
@@ -79,16 +77,34 @@ const TaskTile: React.FC<TaskTileProps> = ({
   }
 
   const getIsDeleteUsersIconActive = () => {
-    if (droppableId === 'doneList' || !isCreatedByMe) return false
+    if (
+      droppableId === 'doneList' ||
+      !isCreatedByMe ||
+      assignedUsers.length === 0
+    )
+      return false
+
+    if (droppableId === 'inprogressList') return false
 
     return true
   }
 
   const getAssignMeIconActive = () => {
-    return false
+    if (!isCreatedByMe || isAssignedToMe) return false
+
+    if (droppableId === 'doneList') return false
+
+    return true
   }
 
   const getUnassignMeIconActive = () => {
+    if (!isCreatedByMe || !isAssignedToMe) return false
+
+    if (droppableId === 'inprogressList' && assignedUsers.length === 1)
+      return false
+
+    if (droppableId === 'doneList') return false
+
     return true
   }
 
@@ -98,11 +114,30 @@ const TaskTile: React.FC<TaskTileProps> = ({
     return 'Assign Me'
   }
 
+  const getPreventDragging = () => {
+    if (
+      droppableId === 'todoList' &&
+      assignedUsers.length > 0 &&
+      !isAssignedToMe &&
+      !isCreatedByMe
+    )
+      return true
+
+    if (
+      (droppableId === 'inprogressList' || droppableId === 'doneList') &&
+      !isCreatedByMe &&
+      !isAssignedToMe
+    )
+      return true
+
+    return false
+  }
+
   return (
     <Draggable
       draggableId={task.id.toString()}
       index={index}
-      isDragDisabled={preventDragging}
+      isDragDisabled={getPreventDragging()}
     >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
         return (
@@ -111,7 +146,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
             ref={provided.innerRef}
             className={cs(styles.mainContainer, {
               [styles.isDragging]: snapshot.isDragging,
-              [styles.preventDragging]: preventDragging,
+              [styles.preventDragging]: getPreventDragging(),
             })}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -138,33 +173,12 @@ const TaskTile: React.FC<TaskTileProps> = ({
               <span
                 className={cs(styles.assignedToTitle, {
                   [styles.assignedToMe]: isAssignedToMe,
-                  [styles.assignedToMoreUsers]: assignedUsers.length > 0,
+                  [styles.assignedToMoreUsers]:
+                    (assignedUsers.length === 1 && !isAssignedToMe) ||
+                    assignedUsers.length > 1,
                 })}
               >
                 {getAssignedTo()}
-                <LightTooltip title="Edit Users" placement="top">
-                  <EditIcon
-                    className={cs(styles.editUsersIcon, {
-                      [styles.editUsersIconActive]: getIsEditUsersIconActive(),
-                    })}
-                  />
-                </LightTooltip>
-                <LightTooltip title="Unassign all Users" placement="top">
-                  <DeleteOutlineIcon
-                    className={cs(styles.deleteUsersIcon, {
-                      [styles.deleteUsersIconActive]:
-                        getIsDeleteUsersIconActive(),
-                    })}
-                  />
-                </LightTooltip>
-                <LightTooltip title={getAssignMeIconTitle()} placement="top">
-                  <AssignmentIndIcon
-                    className={cs(styles.assignMeIcon, {
-                      [styles.assignMeIconActive]: getAssignMeIconActive(),
-                      [styles.unassignMeIconActive]: getUnassignMeIconActive(),
-                    })}
-                  />
-                </LightTooltip>
               </span>
             </span>
             <span className={styles.descripArea}>
@@ -181,6 +195,31 @@ const TaskTile: React.FC<TaskTileProps> = ({
               >
                 <VisibilityIcon className={styles.descriptionIcon} />
               </HtmlTooltip>
+            </span>
+            <span className={styles.buttonsArea}>
+              <LightTooltip title="Assign Users" placement="top">
+                <EditIcon
+                  className={cs(styles.editUsersIcon, {
+                    [styles.editUsersIconActive]: getIsEditUsersIconActive(),
+                  })}
+                />
+              </LightTooltip>
+              <LightTooltip title="Unassign all Users" placement="top">
+                <DeleteOutlineIcon
+                  className={cs(styles.deleteUsersIcon, {
+                    [styles.deleteUsersIconActive]:
+                      getIsDeleteUsersIconActive(),
+                  })}
+                />
+              </LightTooltip>
+              <LightTooltip title={getAssignMeIconTitle()} placement="top">
+                <AssignmentIndIcon
+                  className={cs(styles.assignMeIcon, {
+                    [styles.assignMeIconActive]: getAssignMeIconActive(),
+                    [styles.unassignMeIconActive]: getUnassignMeIconActive(),
+                  })}
+                />
+              </LightTooltip>
             </span>
           </li>
         )
