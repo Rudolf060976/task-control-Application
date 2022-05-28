@@ -7,7 +7,7 @@
   "date    date    date     date "
   "creator creator creator buttons"
   "assigned assigned assigned buttons"
-  "descrip descrip descrip  descrip";
+  "descrip descrip descrip  buttons2";
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: repeat(5, auto);
   gap: 3px 0px;
@@ -48,6 +48,13 @@
   grid-area: buttons;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.buttons2Area {
+  grid-area: buttons2;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -92,7 +99,7 @@
   text-decoration: underline;
 }
 
-.editUsersIcon, .deleteUsersIcon, .assignMeIcon {
+.editUsersIcon, .deleteUsersIcon, .assignMeIcon, .deleteTaskIcon {
   display: inline-block !important;
   color: gray !important;
   cursor: default !important;
@@ -110,7 +117,7 @@
   cursor: pointer !important;
 }
 
-.deleteUsersIconActive {
+.deleteUsersIconActive, .deleteTaskIconActive {
   color: white !important;
   background-color: red !important;
   box-shadow: none !important;

@@ -5,6 +5,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 import {
   Draggable,
   DraggableProvided,
@@ -141,6 +142,11 @@ const TaskTile: React.FC<TaskTileProps> = ({
     return false
   }
 
+  const getDeleteTaskIconActive = () => {
+    if (droppableId !== 'todoList' || !isCreatedByMe) return false
+    return true
+  }
+
   return (
     <Draggable
       draggableId={task.id.toString()}
@@ -230,7 +236,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
                 />
               </LightTooltip>
               <LightTooltip title="Unassign all Users" placement="top">
-                <DeleteOutlineIcon
+                <CancelPresentationIcon
                   className={cs(styles.deleteUsersIcon, {
                     [styles.deleteUsersIconActive]:
                       getIsDeleteUsersIconActive(),
@@ -242,6 +248,15 @@ const TaskTile: React.FC<TaskTileProps> = ({
                   className={cs(styles.assignMeIcon, {
                     [styles.assignMeIconActive]: getAssignMeIconActive(),
                     [styles.unassignMeIconActive]: getUnassignMeIconActive(),
+                  })}
+                />
+              </LightTooltip>
+            </span>
+            <span className={styles.buttons2Area}>
+              <LightTooltip title="Delete Task" placement="top">
+                <DeleteOutlineIcon
+                  className={cs(styles.deleteTaskIcon, {
+                    [styles.deleteTaskIconActive]: getDeleteTaskIconActive(),
                   })}
                 />
               </LightTooltip>
