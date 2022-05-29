@@ -546,7 +546,11 @@ export const useTaskControl = (userId: number) => {
     if (operationType === 'archiveTask') {
       const userTasks = await getUserTasksByStatus(userId, 'done', apolloClient)
 
-      const userTaskIds = userTasks.map((userTask) => userTask.id)
+      const userCreatedTasksOnly = userTasks.filter(
+        (task) => task.createdById === userId
+      )
+
+      const userTaskIds = userCreatedTasksOnly.map((userTask) => userTask.id)
 
       await archiveTasks(userTaskIds, apolloClient)
 
@@ -578,14 +582,14 @@ export const useTaskControl = (userId: number) => {
       allUsers: [],
       currentUsers: [],
       confirmMessage:
-        'Are you sure that you want to Archive your own Done Tasks?',
+        'Are you sure that you want to Archive your CREATED Done Tasks?',
       operationType: 'archiveTask',
     })
   }
 
   const assignUsersModalConfirmHandler = async (users: User[]) => {
     const { taskId } = dataOnProcess
-    console.log('***** USERS ****', JSON.stringify(users, null, 2))
+
     const newUserIds = users.map((user) => user.id)
 
     await assignTask([...newUserIds], taskId, apolloClient)
