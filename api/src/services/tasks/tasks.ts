@@ -134,9 +134,9 @@ export const assignTask = async ({
 
   if (!existingTask) return false
 
-  const { status, isCompleted } = existingTask
+  const { isCompleted } = existingTask
 
-  if (status !== 'todo' || isCompleted) return false
+  if (isCompleted) return false
 
   await db.task.update({
     where: {
@@ -214,7 +214,7 @@ export const changeTaskStatus = async ({
       isCompleted: status === 'done',
       isArchived: status === 'archived',
       completedBy: getCompletedBy(),
-      completedAt: status === 'done' ? null : new Date(),
+      completedAt: status === 'done' ? undefined : new Date(),
     },
   })
 }
@@ -336,7 +336,6 @@ export const unassignTaskByUser = async ({
         deleteMany: {},
         create: restOfUsers.map((user) => ({
           userId: user.id,
-          taskId,
         })),
       },
     },

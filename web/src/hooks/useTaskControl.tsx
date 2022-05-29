@@ -481,8 +481,13 @@ export const useTaskControl = (userId: number) => {
     })
   }
 
-  const assignTaskToMeHandler = async (taskId: number) => {
-    await assignTask([userId], taskId, apolloClient)
+  const assignTaskToMeHandler = async (
+    taskId: number,
+    currentUsers: User[]
+  ) => {
+    const currentUserIds = currentUsers.map((user) => user.id)
+
+    await assignTask([...currentUserIds, userId], taskId, apolloClient)
 
     setRefreshTasks(true)
   }

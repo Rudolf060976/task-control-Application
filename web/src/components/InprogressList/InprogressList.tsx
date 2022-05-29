@@ -15,7 +15,7 @@ type InprogressListProps = {
   userList: User[]
   tasks: Task[]
   onDeleteTask: (taskId: number) => void
-  onAssignTaskToMe: (taskId: number) => void
+  onAssignTaskToMe: (taskId: number, currentUsers: User[]) => void
   onUnassignMe: (taskId: number) => void
   onUnassignTask: (taskId: number) => void
   onAssignTask: (taskId: number, assignedUsers: User[]) => void

@@ -7,7 +7,7 @@
   "date    date    date     date "
   "creator creator creator buttons"
   "assigned assigned assigned buttons"
-  "descrip descrip descrip  buttons2";
+  "descrip done done  buttons2";
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: repeat(5, auto);
   gap: 3px 0px;
@@ -15,6 +15,7 @@
   padding: 10px;
   position: relative;
   background-color: white;
+  min-height: 160px;
 }
 
 .titleArea {
@@ -58,10 +59,20 @@
   align-items: center;
 }
 
+.doneArea {
+  grid-area: done;
+}
+
 .descriptionIcon {
-  margin-left: 10px !important;
-  color: darkgreen;
-  cursor: pointer;
+  display: inline-block !important;
+  color: darkgreen !important;
+  cursor: default !important;
+  background-color: white !important;
+  border-radius: 50% !important;
+  font-size: 22px !important;
+  padding: 2px !important;
+  box-shadow: 0px 0px 5px black !important;
+  margin-left: 10px;
 }
 .dragIcon {
   cursor: pointer !important;
@@ -85,14 +96,14 @@
 }
 
 .createdByMe, .assignedToMe {
-  color: darkolivegreen;
+  color: darkgreen;
   font-weight: bold;
   font-size: 12px;
   margin-left: 5px;
 }
 
 .assignedToMoreUsers {
-  color: darkolivegreen;
+  color: darkgreen;
   font-weight: bold;
   font-size: 12px;
   margin-left: 5px;
@@ -107,40 +118,62 @@
   border-radius: 50% !important;
   font-size: 22px !important;
   padding: 2px !important;
-  box-shadow: 0px 0px 3px gray !important;
+  box-shadow: 0px 0px 5px black !important;
 }
 
 .editUsersIconActive {
   color: white !important;
   background-color: darkgreen !important;
-  box-shadow: none !important;
+  box-shadow: 0px 0px 5px black !important;
   cursor: pointer !important;
 }
 
 .deleteUsersIconActive, .deleteTaskIconActive {
   color: white !important;
-  background-color: red !important;
-  box-shadow: none !important;
+  background-color: rgb(228, 30, 30) !important;
+  box-shadow: 0px 0px 5px black !important;
   cursor: pointer !important;
 }
 
 .assignMeIconActive {
   color: white !important;
   background-color: darkgreen !important;
-  box-shadow: none !important;
+  box-shadow: 0px 0px 5px black !important;
   cursor: pointer !important;
 }
 
 .unassignMeIconActive {
   color: white !important;
   background-color: red !important;
-  box-shadow: none !important;
+  box-shadow: 0px 0px 5px black !important;
   cursor: pointer !important;
 }
 
 .userListTooltipList {
   list-style: none;
   padding: 0;
+}
+
+.taskNotCompleted {
+  display: none;
+}
+
+.doneContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.doneByTitle {
+  font-size: 12px;
+  font-weight: bold;
+  color: steelblue;
+}
+
+.doneByUsername {
+  font-size: 10px;
+  font-weight: normal;
 }
 
 

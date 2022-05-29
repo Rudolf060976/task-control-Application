@@ -28,7 +28,7 @@ type TaskTileProps = {
   userId: number
   droppableId: DroppableId
   onDeleteTask: (taskId: number) => void
-  onAssignTaskToMe: (taskId: number) => void
+  onAssignTaskToMe: (taskId: number, currentUsers: User[]) => void
   onUnassignMe: (taskId: number) => void
   onUnassignTask: (taskId: number) => void
   onAssignTask: (taskId: number, assignedUsers: User[]) => void
@@ -62,7 +62,14 @@ const TaskTile: React.FC<TaskTileProps> = ({
     fetchData()
   }, [refreshTasks])
 
-  const { title, createdAt, description, createdById } = task
+  const {
+    title,
+    createdAt,
+    description,
+    createdById,
+    isCompleted,
+    completedById,
+  } = task
 
   const creatorUser =
     userList.find((user) => user.id === createdById)?.email || ''
@@ -160,11 +167,21 @@ const TaskTile: React.FC<TaskTileProps> = ({
   }
 
   const handleAssignToMeIconClick = (taskId: number) => {
-    if (getAssignMeIconActive()) onAssignTaskToMe(taskId)
+    if (getAssignMeIconActive()) onAssignTaskToMe(taskId, assignedUsers)
 
     if (getUnassignMeIconActive()) onUnassignMe(taskId)
 
     return
+  }
+
+  const getCompletedBy = () => {
+    if (!isCompleted) return ''
+
+    const completedUser = userList.find((user) => user.id === completedById)
+
+    if (!completedUser) return ''
+
+    return completedUser.email
   }
 
   return (
@@ -207,7 +224,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
               title={
                 <>
                   <Typography fontSize={12} color="inherit">
-                    Assigned Users:
+                    Assigned to Users:
                   </Typography>
                   <ul className={styles.userListTooltipList}>
                     {assignedUsers.map((user) => {
@@ -246,6 +263,20 @@ const TaskTile: React.FC<TaskTileProps> = ({
               >
                 <VisibilityIcon className={styles.descriptionIcon} />
               </HtmlTooltip>
+            </span>
+            <span className={styles.doneArea}>
+              <span
+                className={cs(styles.doneContainer, {
+                  [styles.taskNotCompleted]: !isCompleted,
+                })}
+              >
+                <span className={styles.doneByTitle}>
+                  {isCompleted ? 'Completed By:' : ''}
+                </span>
+                <span className={styles.doneByUsername}>
+                  {getCompletedBy()}
+                </span>
+              </span>
             </span>
             <span className={styles.buttonsArea}>
               <LightTooltip title="Assign Users" placement="top">
