@@ -14,9 +14,13 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
   return (
     <div className={styles.mainContainer}>
       <div className={styles.appNameContainer}>
-        <h1 className={styles.appNameTitle}>NIMIX</h1>
+        <img
+          src="/images/logoNimix2.png"
+          alt="logoNimix"
+          className={styles.logo}
+        />
         <h4 className={styles.appNameSlogan}>
-          The Task Tracker App your Team Needs
+          NIMIX 1 - The Task Tracker App your Team Needs
         </h4>
       </div>
       <div className={styles.userContainer}>

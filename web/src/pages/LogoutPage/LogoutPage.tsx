@@ -7,7 +7,7 @@ import styles from './LogoutPage.module.css'
 const LogoutPage = () => {
   const { logOut } = useAuth()
 
-  const [counter, setCounter] = useState(5)
+  const [counter, setCounter] = useState(2)
 
   const updateCounter = () => {
     if (counter === 0) {

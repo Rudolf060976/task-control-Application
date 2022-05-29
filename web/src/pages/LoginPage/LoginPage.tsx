@@ -14,13 +14,7 @@ import { toast, Toaster } from '@redwoodjs/web/toast'
 import { useEffect } from 'react'
 
 const LoginPage = () => {
-  const { isAuthenticated, logIn } = useAuth()
-
-  /* useEffect(() => {
-    if (isAuthenticated) {
-      navigate(routes.userTasks())
-    }
-  }, [isAuthenticated]) */
+  const { logIn } = useAuth()
 
   const usernameRef = useRef<HTMLInputElement>()
   useEffect(() => {
