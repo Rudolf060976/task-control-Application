@@ -11,6 +11,7 @@ import NewTaskModal from '../NewTaskModal/NewTaskModal'
 import { useTaskControl } from 'src/hooks/useTaskControl'
 import TaskToggleButton from '../TaskToggleButton/TaskToggleButton'
 import TaskCounter from '../TaskCounter/TaskCounter'
+import ConfirmationModal from '../ConfirmationModal/ConfirmationModal'
 
 export type DroppableId = 'todoList' | 'inprogressList' | 'doneList'
 
@@ -41,6 +42,16 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     doneTaskList,
     isTodoListDropDisabled,
     isDoneListDropDisabled,
+    deleteTaskHandler,
+    assignTaskToMeHandler,
+    unassignTaskHandler,
+    assignTaskHandler,
+    isConfirmModalOpen,
+    setIsConfirmModalOpen,
+    dataOnProcess,
+    confirmationModalConfirmHandler,
+    unassignTaskToMeHandler,
+    refreshTasks,
   } = useTaskControl(userId)
 
   return (
@@ -88,6 +99,12 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
               tasks={todoTaskList}
               userList={userList}
               isDropDisabled={isTodoListDropDisabled}
+              onDeleteTask={deleteTaskHandler}
+              onAssignTaskToMe={assignTaskToMeHandler}
+              onUnassignMe={unassignTaskToMeHandler}
+              onUnassignTask={unassignTaskHandler}
+              onAssignTask={assignTaskHandler}
+              refreshTasks={refreshTasks}
             />
           </div>
           <div
@@ -101,6 +118,12 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
               userId={userId}
               tasks={inprogressTaskList}
               userList={userList}
+              onDeleteTask={deleteTaskHandler}
+              onAssignTaskToMe={assignTaskToMeHandler}
+              onUnassignMe={unassignTaskToMeHandler}
+              onUnassignTask={unassignTaskHandler}
+              onAssignTask={assignTaskHandler}
+              refreshTasks={refreshTasks}
             />
           </div>
           <div className={cs(styles.doneContainer, styles.taskContainers)}>
@@ -113,6 +136,12 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
               tasks={doneTaskList}
               userList={userList}
               isDropDisabled={isDoneListDropDisabled}
+              onDeleteTask={deleteTaskHandler}
+              onAssignTaskToMe={assignTaskToMeHandler}
+              onUnassignMe={unassignTaskToMeHandler}
+              onUnassignTask={unassignTaskHandler}
+              onAssignTask={assignTaskHandler}
+              refreshTasks={refreshTasks}
             />
           </div>
         </div>
@@ -136,6 +165,12 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
           {snackBarMessage}
         </Alert>
       </Snackbar>
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        message={dataOnProcess?.confirmMessage || ''}
+        onConfirm={confirmationModalConfirmHandler}
+      />
     </div>
   )
 }

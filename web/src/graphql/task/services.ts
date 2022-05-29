@@ -200,7 +200,7 @@ export const archiveTasks = async (
 }
 
 export const deleteTask = async (
-  userId: number[],
+  userId: number,
   taskId: number,
   client: ApolloClient<object>
 ): Promise<Task> => {

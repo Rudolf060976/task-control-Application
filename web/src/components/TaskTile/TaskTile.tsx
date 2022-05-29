@@ -27,6 +27,12 @@ type TaskTileProps = {
   userList: User[]
   userId: number
   droppableId: DroppableId
+  onDeleteTask: (taskId: number) => void
+  onAssignTaskToMe: (taskId: number) => void
+  onUnassignMe: (taskId: number) => void
+  onUnassignTask: (taskId: number) => void
+  onAssignTask: (taskId: number, assignedUsers: User[]) => void
+  refreshTasks: boolean
 }
 
 const TaskTile: React.FC<TaskTileProps> = ({
@@ -35,6 +41,12 @@ const TaskTile: React.FC<TaskTileProps> = ({
   userList,
   userId,
   droppableId,
+  onDeleteTask,
+  onAssignTaskToMe,
+  onUnassignMe,
+  onUnassignTask,
+  onAssignTask,
+  refreshTasks,
 }) => {
   const [assignedUsers, setAssignedUsers] = useState<User[]>([])
 
@@ -48,7 +60,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
     }
 
     fetchData()
-  }, [])
+  }, [refreshTasks])
 
   const { title, createdAt, description, createdById } = task
 
@@ -147,6 +159,14 @@ const TaskTile: React.FC<TaskTileProps> = ({
     return true
   }
 
+  const handleAssignToMeIconClick = (taskId: number) => {
+    if (getAssignMeIconActive()) onAssignTaskToMe(taskId)
+
+    if (getUnassignMeIconActive()) onUnassignMe(taskId)
+
+    return
+  }
+
   return (
     <Draggable
       draggableId={task.id.toString()}
@@ -233,6 +253,11 @@ const TaskTile: React.FC<TaskTileProps> = ({
                   className={cs(styles.editUsersIcon, {
                     [styles.editUsersIconActive]: getIsEditUsersIconActive(),
                   })}
+                  onClick={() =>
+                    getIsEditUsersIconActive
+                      ? onAssignTask(task.id, assignedUsers)
+                      : null
+                  }
                 />
               </LightTooltip>
               <LightTooltip title="Unassign all Users" placement="top">
@@ -241,6 +266,11 @@ const TaskTile: React.FC<TaskTileProps> = ({
                     [styles.deleteUsersIconActive]:
                       getIsDeleteUsersIconActive(),
                   })}
+                  onClick={() =>
+                    getIsDeleteUsersIconActive()
+                      ? onUnassignTask(task.id)
+                      : null
+                  }
                 />
               </LightTooltip>
               <LightTooltip title={getAssignMeIconTitle()} placement="top">
@@ -249,6 +279,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
                     [styles.assignMeIconActive]: getAssignMeIconActive(),
                     [styles.unassignMeIconActive]: getUnassignMeIconActive(),
                   })}
+                  onClick={() => handleAssignToMeIconClick(task.id)}
                 />
               </LightTooltip>
             </span>
@@ -258,6 +289,9 @@ const TaskTile: React.FC<TaskTileProps> = ({
                   className={cs(styles.deleteTaskIcon, {
                     [styles.deleteTaskIconActive]: getDeleteTaskIconActive(),
                   })}
+                  onClick={() =>
+                    getDeleteTaskIconActive() ? onDeleteTask(task.id) : null
+                  }
                 />
               </LightTooltip>
             </span>

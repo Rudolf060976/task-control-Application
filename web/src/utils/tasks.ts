@@ -1,35 +1,34 @@
 import { Task } from 'types/graphql'
 
-export const filterUserTasksAndUpdatePositions = (
-  tasks: Task[],
-  userId: number
+export const updateUserTaskPositions = (
+  allTasks: Task[],
+  userTasks: Task[],
+  newTask?: Task
 ): Task[] => {
-  const userTasks = tasks.filter((task) => {
-    return task.createdById === userId || task.assignedToId === userId
-  })
+  const sortedTasks = allTasks.reduce((newList, task) => {
+    if (newTask && newTask.id === task.id) return [...newList, newTask]
 
-  const newUserTasks = userTasks.map((task, index) => {
+    if (userTasks.some((userTask) => userTask.id === task.id)) {
+      return [...newList, task]
+    }
+
+    return [...newList]
+  }, [])
+
+  return sortedTasks.map((task, index) => {
     return {
       ...task,
       position: index,
     }
   })
-
-  return newUserTasks
 }
 
 export const filterOtherUsersTasks = (
-  tasks: Task[],
-  userId: number
+  allTasks: Task[],
+  userTasks: Task[]
 ): Task[] => {
-  return tasks.filter(
-    (task) => task.createdById !== userId && task.assignedToId !== userId
-  )
-}
-
-export const filterUsersTasks = (tasks: Task[], userId: number): Task[] => {
-  return tasks.filter(
-    (task) => task.createdById === userId || task.assignedToId === userId
+  return allTasks.filter(
+    (task) => !userTasks.some((userTask) => userTask.id === task.id)
   )
 }
 

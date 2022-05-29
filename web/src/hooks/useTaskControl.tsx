@@ -17,15 +17,24 @@ import {
   changeTaskStatus,
   unassignTask,
   getAssignedUsersByTask,
+  deleteTask,
+  unassignTaskByUser,
 } from 'src/graphql/task/services'
 import { Task, User } from 'types/graphql'
-import {
-  filterOtherUsersTasks,
-  filterUsersTasks,
-  filterUserTasksAndUpdatePositions,
-} from 'src/utils/tasks'
+import { filterOtherUsersTasks, updateUserTaskPositions } from 'src/utils/tasks'
 
 type ListType = 'todo' | 'inprogress' | 'done'
+
+type DataOnProcess = {
+  taskId: number
+  users: User[]
+  confirmMessage: string
+  operationType:
+    | 'deleteTask'
+    | 'unassignedTaskToMe'
+    | 'unnasignedTask'
+    | 'assignTask'
+}
 
 export const useTaskControl = (userId: number) => {
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false)
@@ -43,6 +52,10 @@ export const useTaskControl = (userId: number) => {
   const [currentSourceDragDroppable, setCurrentSourceDragDroppable] =
     useState<DroppableId | null>(null)
 
+  const [dataOnProcess, setDataOnProcess] = useState<DataOnProcess | null>(null)
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+
   const apolloClient = useApolloClient()
 
   useEffect(() => {
@@ -58,6 +71,18 @@ export const useTaskControl = (userId: number) => {
       fetchTaskData()
     }
   }, [refreshTasks])
+
+  useEffect(() => {
+    if (dataOnProcess) {
+      setIsConfirmModalOpen(true)
+    }
+  }, [dataOnProcess])
+
+  useEffect(() => {
+    if (!isConfirmModalOpen) {
+      setDataOnProcess(null)
+    }
+  }, [isConfirmModalOpen])
 
   const fetchTaskData = async () => {
     const allUsers = await getAllUsers(apolloClient)
@@ -147,9 +172,13 @@ export const useTaskControl = (userId: number) => {
 
     const allTasks = await getAllTasksByStatus(taskStatus, apolloClient)
 
-    const otherUsersTasks = filterOtherUsersTasks(allTasks, userId)
+    const userTasks = await getUserTasksByStatus(
+      userId,
+      taskStatus,
+      apolloClient
+    )
 
-    const userTasks = filterUsersTasks(allTasks, userId)
+    const otherUsersTasks = filterOtherUsersTasks(allTasks, userTasks)
 
     const sortedUserTasks = [...userTasks].sort(
       (taskA: Task, taskB: Task) => taskA.position - taskB.position
@@ -209,32 +238,33 @@ export const useTaskControl = (userId: number) => {
     }
   }
 
-  const handleDraggingOnTheSameDroppable = (
+  const handleDraggingOnTheSameDroppable = async (
     droppableId: DroppableId,
     sourceIndex: number,
     destinationIndex: number,
     draggableId: string
-  ): void => {
+  ): Promise<void> => {
     let taskList
     let setTaskList
+    let destinationStatus: TaskStatus
 
     switch (droppableId) {
       case 'todoList':
         taskList = [...todoTaskList]
         setTaskList = setTodoTaskList
-
+        destinationStatus = 'todo'
         break
 
       case 'inprogressList':
         taskList = [...inprogressTaskList]
         setTaskList = setInprogressTaskList
-
+        destinationStatus = 'inprogress'
         break
 
       case 'doneList':
         taskList = [...doneTaskList]
         setTaskList = setDoneTaskList
-
+        destinationStatus = 'done'
         break
 
       default:
@@ -253,9 +283,15 @@ export const useTaskControl = (userId: number) => {
 
     setTaskList(taskList)
 
-    const userTasks = filterUserTasksAndUpdatePositions(taskList, userId)
+    const userTasks = await getUserTasksByStatus(
+      userId,
+      destinationStatus,
+      apolloClient
+    )
 
-    const taskPositions = userTasks.map((task) => ({
+    const sortedTasks = updateUserTaskPositions(taskList, userTasks)
+
+    const taskPositions = sortedTasks.map((task) => ({
       id: task.id,
       position: task.position,
     }))
@@ -332,10 +368,6 @@ export const useTaskControl = (userId: number) => {
 
     const noUsersAssignedToTask = usersAssignedToTask.length === 0
 
-    const iAmAssignedToTask = usersAssignedToTask.some(
-      (user) => user.id === userId
-    )
-
     const destinationTask = {
       ...draggableTask,
       status: destinationStatus,
@@ -353,12 +385,19 @@ export const useTaskControl = (userId: number) => {
     setSourceTaskList(filteredSourceTaskList)
     setDestinationTaskList(newDestinationList)
 
-    const userDestinationTasks = filterUserTasksAndUpdatePositions(
-      newDestinationList,
-      userId
+    const userTasks = await getUserTasksByStatus(
+      userId,
+      destinationStatus,
+      apolloClient
     )
 
-    const taskPositions = userDestinationTasks.map((task) => ({
+    const sortedUserTasks = updateUserTaskPositions(
+      newDestinationList,
+      userTasks,
+      destinationTask
+    )
+
+    const taskPositions = sortedUserTasks.map((task) => ({
       id: task.id,
       position: task.position,
     }))
@@ -375,8 +414,17 @@ export const useTaskControl = (userId: number) => {
         apolloClient
       )
     }
+
+    if (sourceStatus === 'done' && destinationStatus === 'inprogress') {
+      await changeTaskStatus(
+        userId,
+        destinationTask.id,
+        'inprogress',
+        apolloClient
+      )
+    }
+
     if (destinationStatus === 'todo') {
-      await unassignTask(destinationTask.id, apolloClient)
       await changeTaskStatus(userId, destinationTask.id, 'todo', apolloClient)
     }
 
@@ -424,6 +472,44 @@ export const useTaskControl = (userId: number) => {
 
   const isDoneListDropDisabled = currentSourceDragDroppable === 'todoList'
 
+  const deleteTaskHandler = (taskId: number) => {
+    setDataOnProcess({
+      taskId,
+      users: [],
+      confirmMessage: 'Are you sure that you want to Delete this Task?',
+      operationType: 'deleteTask',
+    })
+  }
+
+  const assignTaskToMeHandler = async (taskId: number) => {
+    await assignTask([userId], taskId, apolloClient)
+
+    setRefreshTasks(true)
+  }
+
+  const unassignTaskToMeHandler = async (taskId: number) => {
+    await unassignTaskByUser(taskId, userId, apolloClient)
+
+    setRefreshTasks(true)
+  }
+
+  const unassignTaskHandler = async (taskId: number) => {
+    await unassignTask(taskId, apolloClient)
+
+    setRefreshTasks(true)
+  }
+
+  const assignTaskHandler = (taskId: number) => {}
+
+  const confirmationModalConfirmHandler = async () => {
+    const { operationType, taskId, users } = dataOnProcess
+    setIsConfirmModalOpen(false)
+    if (operationType === 'deleteTask') {
+      await deleteTask(userId, taskId, apolloClient)
+      return setRefreshTasks(true)
+    }
+  }
+
   return {
     isNewTaskModalOpen,
     setIsNewTaskModalOpen,
@@ -442,5 +528,15 @@ export const useTaskControl = (userId: number) => {
     userList,
     isTodoListDropDisabled,
     isDoneListDropDisabled,
+    deleteTaskHandler,
+    assignTaskToMeHandler,
+    unassignTaskHandler,
+    assignTaskHandler,
+    isConfirmModalOpen,
+    setIsConfirmModalOpen,
+    dataOnProcess,
+    confirmationModalConfirmHandler,
+    unassignTaskToMeHandler,
+    refreshTasks,
   }
 }

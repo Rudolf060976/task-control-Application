@@ -15,6 +15,12 @@ type DoneListProps = {
   userList: User[]
   tasks: Task[]
   isDropDisabled: boolean
+  onDeleteTask: (taskId: number) => void
+  onAssignTaskToMe: (taskId: number) => void
+  onUnassignMe: (taskId: number) => void
+  onUnassignTask: (taskId: number) => void
+  onAssignTask: (taskId: number, assignedUsers: User[]) => void
+  refreshTasks: boolean
 }
 
 const DoneList: React.FC<DoneListProps> = ({
@@ -22,6 +28,12 @@ const DoneList: React.FC<DoneListProps> = ({
   tasks,
   userList,
   isDropDisabled,
+  onDeleteTask,
+  onAssignTaskToMe,
+  onUnassignMe,
+  onUnassignTask,
+  onAssignTask,
+  refreshTasks,
 }) => {
   return (
     <Droppable droppableId="doneList" isDropDisabled={isDropDisabled}>
@@ -42,6 +54,12 @@ const DoneList: React.FC<DoneListProps> = ({
                 userList={userList}
                 userId={userId}
                 droppableId="doneList"
+                onDeleteTask={onDeleteTask}
+                onAssignTaskToMe={onAssignTaskToMe}
+                onUnassignMe={onUnassignMe}
+                onUnassignTask={onUnassignTask}
+                onAssignTask={onAssignTask}
+                refreshTasks={refreshTasks}
               />
             )
           })}

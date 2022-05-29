@@ -14,12 +14,24 @@ type InprogressListProps = {
   userId: number
   userList: User[]
   tasks: Task[]
+  onDeleteTask: (taskId: number) => void
+  onAssignTaskToMe: (taskId: number) => void
+  onUnassignMe: (taskId: number) => void
+  onUnassignTask: (taskId: number) => void
+  onAssignTask: (taskId: number, assignedUsers: User[]) => void
+  refreshTasks: boolean
 }
 
 const InprogressList: React.FC<InprogressListProps> = ({
   userId,
   tasks,
   userList,
+  onDeleteTask,
+  onAssignTaskToMe,
+  onUnassignMe,
+  onUnassignTask,
+  onAssignTask,
+  refreshTasks,
 }) => {
   return (
     <Droppable droppableId="inprogressList">
@@ -40,6 +52,12 @@ const InprogressList: React.FC<InprogressListProps> = ({
                 userList={userList}
                 userId={userId}
                 droppableId="inprogressList"
+                onDeleteTask={onDeleteTask}
+                onAssignTaskToMe={onAssignTaskToMe}
+                onUnassignMe={onUnassignMe}
+                onUnassignTask={onUnassignTask}
+                onAssignTask={onAssignTask}
+                refreshTasks={refreshTasks}
               />
             )
           })}

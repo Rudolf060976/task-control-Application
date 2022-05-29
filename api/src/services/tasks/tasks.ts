@@ -102,6 +102,12 @@ export const deleteTask = async ({
   // Only the Author of the Task can delete it.
   if (!existingTask || existingTask.createdById !== userId) return false
 
+  await db.tasksOnUsers.deleteMany({
+    where: {
+      taskId,
+    },
+  })
+
   await db.task.delete({
     where: {
       id: taskId,
@@ -224,7 +230,7 @@ export const unassignTask = async ({ taskId }: MutationassignTaskArgs) => {
 
   const { status, isCompleted } = existingTask
 
-  if (status !== 'inprogress' || isCompleted) return null
+  if (status !== 'todo' || isCompleted) return null
 
   return await db.task.update({
     where: {
@@ -303,6 +309,21 @@ export const unassignTaskByUser = async ({
   if (isCompleted) return false
 
   const assignedUsers = await getAssignedUsersByTask({ taskId })
+
+  if (assignedUsers.length === 1 && assignedUsers[0].id === userId) {
+    await db.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        assignedUsers: {
+          deleteMany: {},
+        },
+      },
+    })
+
+    return true
+  }
 
   const restOfUsers = assignedUsers.filter((user) => user.id !== userId)
 
