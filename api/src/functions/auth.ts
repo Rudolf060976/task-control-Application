@@ -2,7 +2,6 @@ import { db } from 'src/lib/db'
 import { DbAuthHandler } from '@redwoodjs/api'
 
 export const handler = async (event, context) => {
-
   const forgotPasswordOptions = {
     // handler() is invoked after verifying that a user was found with the given
     // username. This is where you can send the user an email with a link to
@@ -47,6 +46,11 @@ export const handler = async (event, context) => {
     // `{ message: 'Error message' }`
     handler: (user) => {
       return user
+      /* if (!user.verified) {
+        throw new Error('Please validate your email first!')
+      } else {
+        return user
+      } */
     },
 
     errors: {

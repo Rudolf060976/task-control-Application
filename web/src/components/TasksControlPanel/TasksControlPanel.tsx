@@ -78,7 +78,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
           className={styles.createTaskButton}
           onClick={handleArchiveTasks}
         >
-          Archive Done Tasks
+          Archive User`s Done Tasks
         </Button>
         <Button
           variant="contained"

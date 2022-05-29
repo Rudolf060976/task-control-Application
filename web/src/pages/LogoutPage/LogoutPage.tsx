@@ -1,26 +1,40 @@
-import { useEffect } from 'react'
-import { routes, Link } from '@redwoodjs/router'
+import { useState } from 'react'
+import { routes, navigate } from '@redwoodjs/router'
 import { useAuth } from '@redwoodjs/auth'
+
+import styles from './LogoutPage.module.css'
 
 const LogoutPage = () => {
   const { logOut } = useAuth()
 
-  const onLogout = async () => {
-    await logOut()
+  const [counter, setCounter] = useState(5)
+
+  const updateCounter = () => {
+    if (counter === 0) {
+      ;(async function () {
+        clearInterval(intervalID)
+        await logOut()
+        navigate(routes.home())
+      })()
+
+      return
+    }
+
+    setCounter(counter - 1)
   }
 
-  useEffect(() => {
-    onLogout()
-  }, [])
+  const intervalID = setInterval(updateCounter, 1000)
 
   return (
-    <div className="flex space-x-4 p-20 w-full justify-center">
-      <Link to={routes.login()}>
-        <span className="text-indigo-500 hover:text-indigo-900">Login</span>
-      </Link>
-      <Link to={routes.signup()}>
-        <span className="text-indigo-500 hover:text-indigo-900">Signup</span>
-      </Link>
+    <div className={styles.mainContainer}>
+      <img
+        src="/images/logoutImage.jpeg"
+        alt="logout"
+        className={styles.logoutImage}
+      />
+      <h1 className={styles.counterMessage}>
+        {`Redirecting to Home Page in ${counter} seconds`}
+      </h1>
     </div>
   )
 }

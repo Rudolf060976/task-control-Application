@@ -1,7 +1,6 @@
 import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
 import { db } from './db'
 
-
 /**
  * The session object sent in as the first argument to getCurrentUser() will
  * have a single key `id` containing the unique ID of the logged in user
@@ -84,6 +83,7 @@ export const hasRole = ({ roles }: { roles: AllowedRoles }): boolean => {
  *
  * @see https://github.com/redwoodjs/redwood/tree/main/packages/auth for examples
  */
+
 export const requireAuth = ({ roles }: { roles: AllowedRoles }) => {
   if (!isAuthenticated()) {
     throw new AuthenticationError("You don't have permission to do that.")

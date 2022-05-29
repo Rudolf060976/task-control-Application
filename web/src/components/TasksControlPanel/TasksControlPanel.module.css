@@ -63,6 +63,7 @@
 .createTaskButton {
   margin-bottom: 30px !important;
   width: 150px !important;
+  background-color: rgb(70, 130, 180) !important;
 }
 
 .toggleButtonContainer {

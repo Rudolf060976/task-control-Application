@@ -16,11 +16,11 @@ import { useEffect } from 'react'
 const LoginPage = () => {
   const { isAuthenticated, logIn } = useAuth()
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (isAuthenticated) {
       navigate(routes.userTasks())
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated]) */
 
   const usernameRef = useRef<HTMLInputElement>()
   useEffect(() => {
@@ -29,13 +29,12 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     const response = await logIn({ ...data })
-
     if (response.message) {
       toast(response.message)
     } else if (response.error) {
       toast.error(response.error)
     } else {
-      toast.success('Welcome back!')
+      navigate(routes.userTasks())
     }
   }
 
