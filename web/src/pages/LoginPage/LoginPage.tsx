@@ -35,7 +35,6 @@ const LoginPage = () => {
   return (
     <>
       <MetaTags title="Login" />
-
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
@@ -101,6 +100,9 @@ const LoginPage = () => {
                   <FieldError name="password" className="rw-field-error" />
 
                   <div className="rw-button-group">
+                    <Link to={routes.home()} className="rw-link mr-5 mt-1">
+                      Back to Home
+                    </Link>
                     <Submit className="rw-button rw-button-blue">Login</Submit>
                   </div>
                 </Form>

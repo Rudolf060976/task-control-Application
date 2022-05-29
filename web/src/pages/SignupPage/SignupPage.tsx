@@ -99,6 +99,9 @@ const SignupPage = () => {
                   <FieldError name="password" className="rw-field-error" />
 
                   <div className="rw-button-group">
+                    <Link to={routes.home()} className="rw-link mr-5 mt-1">
+                      Back to Home
+                    </Link>
                     <Submit className="rw-button rw-button-blue">
                       Sign Up
                     </Submit>
