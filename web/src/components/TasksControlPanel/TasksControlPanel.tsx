@@ -52,6 +52,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     confirmationModalConfirmHandler,
     unassignTaskToMeHandler,
     refreshTasks,
+    handleArchiveTasks,
   } = useTaskControl(userId)
 
   return (
@@ -71,9 +72,9 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         <Button
           variant="contained"
           className={styles.createTaskButton}
-          onClick={() => null}
+          onClick={handleArchiveTasks}
         >
-          Archive Tasks
+          Archive Done Tasks
         </Button>
         <Button
           variant="contained"
@@ -153,7 +154,7 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
       />
       <Snackbar
         open={isSnackBarOpen}
-        autoHideDuration={1000}
+        autoHideDuration={2000}
         onClose={snackBarCloseHandler}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >

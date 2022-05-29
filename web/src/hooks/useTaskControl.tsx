@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { DropResult, ResponderProvided, DragStart } from 'react-beautiful-dnd'
+import { DropResult, DragStart } from 'react-beautiful-dnd'
 import { useApolloClient } from '@apollo/client'
 import {
   DroppableId,
@@ -19,6 +19,7 @@ import {
   getAssignedUsersByTask,
   deleteTask,
   unassignTaskByUser,
+  archiveTasks,
 } from 'src/graphql/task/services'
 import { Task, User } from 'types/graphql'
 import { filterOtherUsersTasks, updateUserTaskPositions } from 'src/utils/tasks'
@@ -34,6 +35,7 @@ type DataOnProcess = {
     | 'unassignedTaskToMe'
     | 'unnasignedTask'
     | 'assignTask'
+    | 'archiveTask'
 }
 
 export const useTaskControl = (userId: number) => {
@@ -508,11 +510,50 @@ export const useTaskControl = (userId: number) => {
 
   const confirmationModalConfirmHandler = async () => {
     const { operationType, taskId, users } = dataOnProcess
+
     setIsConfirmModalOpen(false)
+
     if (operationType === 'deleteTask') {
       await deleteTask(userId, taskId, apolloClient)
       return setRefreshTasks(true)
     }
+    if (operationType === 'archiveTask') {
+      const userTasks = await getUserTasksByStatus(userId, 'done', apolloClient)
+
+      const userTaskIds = userTasks.map((userTask) => userTask.id)
+
+      await archiveTasks(userTaskIds, apolloClient)
+
+      const taskCounter = userTaskIds.length
+
+      if (taskCounter === 1) {
+        setSnackBarMessage(`1 Task has been Archived successfully!`)
+      } else {
+        setSnackBarMessage(
+          `${taskCounter} Tasks have been Archived successfully!`
+        )
+      }
+
+      setRefreshTasks(true)
+    }
+  }
+
+  const handleArchiveTasks = async () => {
+    const userTasks = await getUserTasksByStatus(userId, 'done', apolloClient)
+
+    if (userTasks.length === 0) {
+      setSnackBarMessage('The are no Tasks to be Archived!')
+
+      return
+    }
+
+    setDataOnProcess({
+      taskId: 0,
+      users: [],
+      confirmMessage:
+        'Are you sure that you want to Archive your own Done Tasks?',
+      operationType: 'archiveTask',
+    })
   }
 
   return {
@@ -543,5 +584,6 @@ export const useTaskControl = (userId: number) => {
     confirmationModalConfirmHandler,
     unassignTaskToMeHandler,
     refreshTasks,
+    handleArchiveTasks,
   }
 }

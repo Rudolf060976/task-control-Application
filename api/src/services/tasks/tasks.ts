@@ -193,6 +193,17 @@ export const changeTaskStatus = async ({
 
   if (status === 'archived') {
     if (oldStatus !== 'done') return null
+
+    return await db.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        status,
+        isCompleted: true,
+        isArchived: true,
+      },
+    })
   }
 
   const getCompletedBy = () => {
@@ -212,7 +223,7 @@ export const changeTaskStatus = async ({
     data: {
       status,
       isCompleted: status === 'done',
-      isArchived: status === 'archived',
+      isArchived: false,
       completedBy: getCompletedBy(),
       completedAt: status === 'done' ? undefined : new Date(),
     },
