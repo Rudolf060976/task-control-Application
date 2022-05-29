@@ -12,6 +12,7 @@ import { useTaskControl } from 'src/hooks/useTaskControl'
 import TaskToggleButton from '../TaskToggleButton/TaskToggleButton'
 import TaskCounter from '../TaskCounter/TaskCounter'
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal'
+import AssignUsersToTaskDialog from '../AssignUsersToTaskDialog/AssignUsersToTaskDialog'
 
 export type DroppableId = 'todoList' | 'inprogressList' | 'doneList'
 
@@ -53,6 +54,9 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     unassignTaskToMeHandler,
     refreshTasks,
     handleArchiveTasks,
+    isAssignUsersModalOpen,
+    setIsAssignUsersModalOpen,
+    assignUsersModalConfirmHandler,
   } = useTaskControl(userId)
 
   return (
@@ -171,6 +175,13 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
         onClose={() => setIsConfirmModalOpen(false)}
         message={dataOnProcess?.confirmMessage || ''}
         onConfirm={confirmationModalConfirmHandler}
+      />
+      <AssignUsersToTaskDialog
+        isOpen={isAssignUsersModalOpen}
+        onClose={() => setIsAssignUsersModalOpen(false)}
+        onConfirm={assignUsersModalConfirmHandler}
+        currentUsers={dataOnProcess?.currentUsers || []}
+        allUsers={dataOnProcess?.allUsers || []}
       />
     </div>
   )

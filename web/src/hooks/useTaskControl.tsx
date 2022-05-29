@@ -28,7 +28,8 @@ type ListType = 'todo' | 'inprogress' | 'done'
 
 type DataOnProcess = {
   taskId: number
-  users: User[]
+  allUsers: User[]
+  currentUsers: User[]
   confirmMessage: string
   operationType:
     | 'deleteTask'
@@ -58,6 +59,8 @@ export const useTaskControl = (userId: number) => {
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
 
+  const [isAssignUsersModalOpen, setIsAssignUsersModalOpen] = useState(false)
+
   const apolloClient = useApolloClient()
 
   useEffect(() => {
@@ -75,9 +78,15 @@ export const useTaskControl = (userId: number) => {
   }, [refreshTasks])
 
   useEffect(() => {
-    if (dataOnProcess) {
+    if (!dataOnProcess) return
+
+    if (dataOnProcess.operationType !== 'assignTask') {
       setIsConfirmModalOpen(true)
+      return
     }
+
+    setIsAssignUsersModalOpen(true)
+    return
   }, [dataOnProcess])
 
   useEffect(() => {
@@ -85,6 +94,12 @@ export const useTaskControl = (userId: number) => {
       setDataOnProcess(null)
     }
   }, [isConfirmModalOpen])
+
+  useEffect(() => {
+    if (!isAssignUsersModalOpen) {
+      setDataOnProcess(null)
+    }
+  }, [isAssignUsersModalOpen])
 
   const fetchTaskData = async () => {
     const allUsers = await getAllUsers(apolloClient)
@@ -477,7 +492,8 @@ export const useTaskControl = (userId: number) => {
   const deleteTaskHandler = (taskId: number) => {
     setDataOnProcess({
       taskId,
-      users: [],
+      currentUsers: [],
+      allUsers: [],
       confirmMessage: 'Are you sure that you want to Delete this Task?',
       operationType: 'deleteTask',
     })
@@ -506,7 +522,17 @@ export const useTaskControl = (userId: number) => {
     setRefreshTasks(true)
   }
 
-  const assignTaskHandler = (taskId: number) => {}
+  const assignTaskHandler = async (taskId: number, currentUsers: User[]) => {
+    const allUsers = await getAllUsers(apolloClient)
+
+    setDataOnProcess({
+      taskId,
+      allUsers,
+      currentUsers,
+      confirmMessage: '',
+      operationType: 'assignTask',
+    })
+  }
 
   const confirmationModalConfirmHandler = async () => {
     const { operationType, taskId, users } = dataOnProcess
@@ -549,11 +575,24 @@ export const useTaskControl = (userId: number) => {
 
     setDataOnProcess({
       taskId: 0,
-      users: [],
+      allUsers: [],
+      currentUsers: [],
       confirmMessage:
         'Are you sure that you want to Archive your own Done Tasks?',
       operationType: 'archiveTask',
     })
+  }
+
+  const assignUsersModalConfirmHandler = async (users: User[]) => {
+    const { taskId } = dataOnProcess
+    console.log('***** USERS ****', JSON.stringify(users, null, 2))
+    const newUserIds = users.map((user) => user.id)
+
+    await assignTask([...newUserIds], taskId, apolloClient)
+
+    setIsAssignUsersModalOpen(false)
+
+    setRefreshTasks(true)
   }
 
   return {
@@ -585,5 +624,8 @@ export const useTaskControl = (userId: number) => {
     unassignTaskToMeHandler,
     refreshTasks,
     handleArchiveTasks,
+    isAssignUsersModalOpen,
+    setIsAssignUsersModalOpen,
+    assignUsersModalConfirmHandler,
   }
 }

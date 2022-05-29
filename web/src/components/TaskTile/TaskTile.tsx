@@ -31,7 +31,7 @@ type TaskTileProps = {
   onAssignTaskToMe: (taskId: number, currentUsers: User[]) => void
   onUnassignMe: (taskId: number) => void
   onUnassignTask: (taskId: number) => void
-  onAssignTask: (taskId: number, assignedUsers: User[]) => void
+  onAssignTask: (taskId: number, currentUsers: User[]) => void
   refreshTasks: boolean
 }
 
@@ -285,7 +285,7 @@ const TaskTile: React.FC<TaskTileProps> = ({
                     [styles.editUsersIconActive]: getIsEditUsersIconActive(),
                   })}
                   onClick={() =>
-                    getIsEditUsersIconActive
+                    getIsEditUsersIconActive()
                       ? onAssignTask(task.id, assignedUsers)
                       : null
                   }

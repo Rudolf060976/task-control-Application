@@ -1,0 +1,10 @@
+.mainContent {
+  width: 500px;
+  height: 400px;
+  padding: 20px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}

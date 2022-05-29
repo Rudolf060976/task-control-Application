@@ -1,0 +1,45 @@
+.mainContainer {
+  margin-bottom: 10px;
+}
+.searchInput {
+  width: 400px;
+}
+
+.floatingListContainer {
+
+  background-color: white;
+  z-index: 10000;
+}
+
+.floatingList {
+  position: absolute;
+  display: none;
+  width: 400px;
+  max-height: 120px;
+  overflow-y: auto;
+  z-index: 50;
+  margin-top: 10px;
+  background-color: rgb(229, 237, 243);
+}
+
+.showList {
+  display: block;
+}
+
+.floatingListItem {
+  padding: 3px 0 3px 5px;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.selectedListItem {
+  background-color: steelblue;
+  color: white;
+  cursor: pointer;
+}
+
+.floatingListItem:hover {
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+}
