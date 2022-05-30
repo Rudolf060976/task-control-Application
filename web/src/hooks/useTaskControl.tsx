@@ -480,10 +480,10 @@ export const useTaskControl = (userId: number) => {
     setTaskFilter(filterValue)
   }
 
-  const deleteAllTasksHandler = () => {
+  /* const deleteAllTasksHandler = () => {
     deleteAllTasks(apolloClient)
     setRefreshTasks(true)
-  }
+  } */
 
   const isTodoListDropDisabled = currentSourceDragDroppable === 'doneList'
 
@@ -613,7 +613,6 @@ export const useTaskControl = (userId: number) => {
     todoTaskList,
     inprogressTaskList,
     doneTaskList,
-    deleteAllTasksHandler,
     userList,
     isTodoListDropDisabled,
     isDoneListDropDisabled,

@@ -37,7 +37,6 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
     handleTaskFilter,
     taskFilter,
     todoTaskList,
-    deleteAllTasksHandler,
     userList,
     inprogressTaskList,
     doneTaskList,
@@ -79,13 +78,6 @@ const TasksControlPanel: React.FC<TasksControlPanelProps> = ({ userId }) => {
           onClick={handleArchiveTasks}
         >
           Archive User`s Done Tasks
-        </Button>
-        <Button
-          variant="contained"
-          className={styles.createTaskButton}
-          onClick={deleteAllTasksHandler}
-        >
-          Delete all (Development)
         </Button>
       </div>
       <DragDropContext
