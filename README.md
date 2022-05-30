@@ -48,7 +48,8 @@ Your browser should open automatically to `http://localhost:8910` to see the web
 
 # Delivery of the Project
 
-> Important Note: There is a unique problem I faced and could not fixed, related to Redwoodjs setup that I haven't been able to fix so far. The Log out functionality  is not working on the backend. It works on the frontend but when the page is refreshed, the backend does not execute a log out handler and it  ends up returning the last currentUser and isAuthenticated to true. I could not find on the web (Redwoodjs Docs, blogs, forums) how to activate the logout feature on the server using the Redwood Self-hosted Auth.
+> Important Note: There is a unique problem I faced, related to Redwoodjs setup that I haven't been able to fix so far. The Log out functionality  is not working on the backend. It works on the frontend but when the page is refreshed, the backend does not execute a log out handler and it  ends up returning the last currentUser and isAuthenticated to true. I could not find on the web (Redwoodjs Docs, blogs, forums) how to activate the logout feature on the server using the Redwood Self-hosted Auth.
+However, on the frontend we can log out and log in with as many users as we want.
 
 ## How to use the Application
 
@@ -64,5 +65,44 @@ When you open the App, you will be directed to the hompage. Then you can click o
 
 ### Entering the Task Page
 
-Once you have logged in / signed up to the App, you'll be redirected to the Task Page. You will see on the page header your username and a Log out button to exit the Application.
+Once you have logged in / signed up to the App, you'll be redirected to the Task Page. You will see on the page header your username and a Log out button to exit the Application. On the left side there's a side bar with a bunch of controls. Let's dive into the first and most important action: Creating a Task.
+
+### Creating a Task
+
+All users can create tasks. You just need to follow this steps:
+
+- Click on the NEW TASK button. The New Task Modal will open.
+- Enter the Title and Description of the Task.
+- Click on the Confirm Button.
+
+You will see a new Task created at the end of the TO DO List.
+
+> Future improvement: When the User creates a new Task, we would like to see the new task at the top of the list.
+
+Let's give a brief description of the data displayed on the new Task:
+
+- Title: At the top of the Task, in blue color and capital letters.
+- Created at: Date of creation.
+- Created by: The User who created the Task. If the task was created by the logged user it will say "ME".
+- Assigned to: The Assignee users of the Task. The possible values are the following:
+  - ME : The user logged in.
+  - ME and (n) User(s).
+  - (n) User(s).
+- Description: There's a small eye icon where you can hover and a Tooltip will be displayed with the text description of the Task.
+
+> Future improvement: The description could be displayed on its own Modal to make the reading easier, and could be in HTML format.
+
+There's a group of buttons displayed on the right side of every task. The actions are described below:
+
+- Delete Task: Allows the creator to delete a Task (Only active for the Creator of the Task, in the TO DO list).
+- Assign Me: This is a shortcut useful to assign the Task to the Creator. Only active for the Creator of the Task, in the TO DO list.
+- Unassign Me: The opposite action of the Assign Me button. Only active for the Creator of the Task, in the TO DO and IN PROGRESS lists.
+- Unassign All Users: The name is pretty descriptive. Only active for the Creator of the Task, in the TO TO list.
+- Assign Users: This button allows you to add or remove assignee users for this Task. Only active for the Creator of the Task, in the TO DO and IN PROGRESS lists.
+
+> Note: When you create a Task, you are the Creator, but you're not an assignee by default. This is because maybe you won't work on that Task, but you will assign it to other users. However, you can become an assignee, as will be explained later.
+
+
+
+
 
