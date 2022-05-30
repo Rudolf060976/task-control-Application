@@ -152,3 +152,74 @@ If you created the Task and you are already an asignee (you will se "ME" in the 
 
 > If the Task is on the IN PROGRESS List, the Unassign All Users button is not active. This is because it makes no sense to leave a Task on the IN PROGRESS List without Assignees.
 
+### Getting the list of Assignees of a Tasks.
+
+You can see the list of Assignees (users) of a Task in one of two ways:
+
+- All users (creator and no-creator) will be able to hover on the Assigned to field of the Task and a Tooltip will be displayed listing the assignees.
+- If you are the Creator of the Task, and the Task is on the TO DO List or IN PROGRESS List, you can click on the Assign Users button and you'll see the list of assignees at the bottom of the Assign Task to Users Modal.
+
+### Deleting Tasks.
+
+Only the Creator of the Task is able to delete the Task. If the Task is on the TODO List, click on the Delete Task button and the Task will be gone.
+
+> The Creator can only delete Tasks on the TODO List.
+
+
+### The Task Filter (Tasks to Show Toggle Button).
+
+It's located in the left sidebar and can only have two possible values:
+
+- MINE: When you click on this Button, all the lists (TO DO, IN PROGRESS AND DONE) will show only those Tasks you Created and also the Tasks that were assigned to your user.
+- ALL: Here you can see all Tasks (Created or not created, assigned or not assigned to you).
+
+
+### Dragging Tasks.
+
+You can move (drag) Tasks accross the three lists (TO DO, IN PROGRESS AND DONE) but you are limited by the following rules:
+
+- You can only move those Tasks create by you or assigned to you. When you click on the All button of the Task Filter you will see Tasks created by and assign to other users, but you won't be able to Drag them.
+
+> You can easily recognize the Tasks you can't drag because they will have a light gray background color.
+
+- You can't move a Task directly from TO DO to DONE or vice versa.
+
+> Future Improvement: There are use cases where it would be useful if the Creator could block a Task to prevent other users from dragging it.
+
+
+### Task counters in the Lists.
+
+At the top right of each list there's a counter that allows the user to know the count of tasks on that list.
+
+
+### Completing Tasks.
+
+The following users can complete a Task, dragging the Task from the IN PROGRESS List to the DONE List:
+
+- The Creator of the Task, regardless of whether it is an assignee or not.
+- Any of the assignees of the Task.
+
+When any of the previous mentioned users drag the Task to the DONE List, the Task status will be changed to 'done' and a label displaying the name of the user that moved the Task will be shown at the bottom of the Task.
+
+> Any of the assignees of the Task (and even the Creator) can drag the Task to the DONE list, but the Task will be marked as "Completed by" the user who moved it.
+
+If any of the mentioned users drag the Task back to IN PROGRESS, the Task status will be switched back to 'inprogress' and the 'Completed by' field will be gone.
+
+
+### Archiving Tasks.
+
+This feature allows the user to 'clean' the DONE List, getting rid of completed tasks that are no longer needed. However, archiving tasks is limited by the following rule:
+
+- Only the creator of the Tasks can archive these Tasks on the DONE List. Those Tasks where the User is asignee (but not creator) can't be archived by them. Those Tasks can be archived by their creators.
+
+A Modal will open asking to confirm the action.
+
+
+### Other future improvements.
+
+- Creator and assignee users will be able to add comments to a Task.
+- Additional filters: Filter Tasks by user, by Period, etc.
+- New page to open a List and see more tasks at the same time, and being able to move tasks without dragging them.
+- PDF Reports of completed Tasks by period and by user.
+
+### More ideas coming up...Really enjoyed this project...Thanks for that :+1:
