@@ -103,6 +103,52 @@ There's a group of buttons displayed on the right side of every task. The action
 > Note: When you create a Task, you are the Creator, but you're not an assignee by default. This is because maybe you won't work on that Task, but you will assign it to other users. However, you can become an assignee, as will be explained later.
 
 
+### Assigning Tasks to Users.
+
+#### Assigning a Task to the Creator.
+
+If you created the Task, you can become an assignee in several possible ways:
+- If the Task is on the TO DO List and has no assignees, you can just drag the Task to the IN PROGRESS List and then you'll be an assignee immediately.
+- If the Task is on the TO DO List and has assignees, you can click on the Assign Me button and you'll be an assignee immediately.
+- If the Task is on the IN PROGRESS List, you can click on the Assign Me button and you'll be an assignee immediately.
+- If the Task is on the TO DO List or IN PROGRESS List, you can click on the Assign Users button to open a Modal and assign the Task to your own User.
 
 
+> Note: Only the Creator of a Task is able to assign the Task to themselve or to other Users.
+
+
+> Note: You can't assign/unassign Tasks to Users in the DONE List.
+
+
+#### Assigning a Task to other Users.
+
+If you created the Task, you can assign the Task to other users following the steps bellow:
+
+- Click on the Assign Users button. The Assign Task to Users Modal will open.
+- If the Task has already any Assignees, you will see them listed at the bottom of the Modal.
+- Type the username in the Search Input to search for users, and select the desired user, using the arrow keys (up and down) or clicking with the Mouse.
+- The user will be added to the bottom list.
+- Repeat the process to add more users.
+- You can also remove users from the list, clicking on the delete icon (-).
+- Once you have all the desired users on the list, click on Confirm.
+
+> Note: You can Add as many users as you want, but you can't leave the list empty. If you need to remove all assigned users, there's a button for that, as described below.
+
+> Note: Please remember that only de Creator of the Task can assign/unassign the Task to other users. You can't assign/unassign Tasks to Users in the DONE List. Furthermore, You can't assign/unassign Tasks to Users in the DONE List.
+
+
+### Unassigning Tasks.
+
+#### Removing the Creator as assignee.
+
+If you created the Task and you are already an asignee (you will se "ME" in the Assigned to field), you can remove that relation in one of three possible ways:
+
+- If the Task is on the TO DO List, click on the Unassign Me button (red color) and you will no longer see the "ME" word in the Assigned to field.
+- If the Task is on the IN PROGRESS List and besides you, there are other assignees in the Task, click on the Unassign Me button (red color) and you will no longer see the "ME" word in the Assigned to field.
+
+> Note: If the Task is on the IN PROGRESS List and you, the Creator of the Task, are the only assignee, unfortunately you won't be able to remove the relationship on the IN PROGRESS List. You need to Drag the Task to the TO DO List before you can click on the Unassign button. This is because it makes no sense to leave a Task on the IN PROGRESS List without Assignees.
+
+- If the Task is on the TO DO List, click on the Unassign All Users button (red color) to remove all assignees from the Task (including you).
+
+> If the Task is on the IN PROGRESS List, the Unassign All Users button is not active. This is because it makes no sense to leave a Task on the IN PROGRESS List without Assignees.
 
